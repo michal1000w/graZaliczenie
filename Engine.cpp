@@ -1,6 +1,5 @@
 #include <ncurses.h>
-#include <iostream>
-#include "EasyConsole.cpp"
+#include "EasyConsole.h"
 
 #define sizeX 70
 #define sizeY 20
@@ -17,13 +16,18 @@ private:
         char Char;
     };
     player Player;
+    char Empty, Wall, Box;
     
 public:
     void Init(){
+        eCon.ClearScr();
+        Empty = ' ';
         FillEmpty(); //inicjowanie tablicy zerami
         Player.X = sizeX/2;
         Player.Y = sizeY/2;
         Player.Char = '&';
+        Wall = '#';
+        Box = '0';
     }
     
     void MainLoop(){
@@ -31,41 +35,33 @@ public:
         DrawPlayer();
         
         while(true){
-            
             if (MovePlayer() == 'q') //zatrzymanie pętli
                 break;
-            
-            Enemy();
         }
     }
     
 private:
-    void Enemy(){
-        board[10][10] = '4';
-        UpdateBoard(10, 10);
-    }
-    
     char MovePlayer(){
         nodelay(stdscr, true); //non-block input from getch()
         char keyPressed = getch();
         
         if (keyPressed == 'w'){
-            board[Player.Y][Player.X] = ' ';
+            board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.Y--;
             DrawPlayer();
         } else if (keyPressed == 's'){
-            board[Player.Y][Player.X] = ' ';
+            board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.Y++;
             DrawPlayer();
         } else if (keyPressed == 'd'){
-            board[Player.Y][Player.X] = ' ';
+            board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.X++;
             DrawPlayer();
         } else if (keyPressed == 'a'){
-            board[Player.Y][Player.X] = ' ';
+            board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.X--;
             DrawPlayer();
@@ -77,7 +73,7 @@ private:
     void FillEmpty(){
         for (int y=0; y<sizeY; y++)
             for (int x=0; x<sizeX; x++)
-                board[y][x] = ' ';
+                board[y][x] = Empty;
     }
     
     void DrawFullBoard(){
