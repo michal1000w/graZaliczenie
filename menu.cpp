@@ -32,6 +32,8 @@ public:
             char keyPressed = getch();
             //3 - strzałka w górę
             //2 - strzałka w dół
+            //5 - strzałka w prawo
+            //4 - strzałka w lewo
             if (keyPressed == 2 && pos < 1)
                 pos++;
             else if (keyPressed == 3 && pos > 0)
@@ -40,6 +42,11 @@ public:
                 break;
             else if (keyPressed == 10 && pos == 1)
                 DrawMenuSterowanie(x);
+            else if (keyPressed == 'q'){
+                endwin();
+                exit(1);
+                break;
+            }
         }
     }
     
@@ -48,6 +55,9 @@ public:
         DrawLabel(x, "Sterowanie");
         DrawMenuItem(x, " ", false);
         DrawMenuItem(x,"Uzyj strzalek do poruszania sie po planszy;", false);
+        DrawMenuItem(x, "Aby wyjsc z gry nacisnij 'q'", false);
+        
+        DrawMenuItem(x, " ", false);
         DrawMenuItem(x, "Nacisnij dowolny klawisz by wrocic do menu;", false);
         DrawMenuItem(x, " ", false);
         DrawLine(x);

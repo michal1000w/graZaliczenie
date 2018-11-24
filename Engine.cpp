@@ -45,22 +45,22 @@ private:
         nodelay(stdscr, true); //non-block input from getch()
         char keyPressed = getch();
         
-        if (keyPressed == 'w'){
+        if (keyPressed == 3 && Player.Y > 0){ //strzałka w górę
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.Y--;
             DrawPlayer();
-        } else if (keyPressed == 's'){
+        } else if (keyPressed == 2 && Player.Y < sizeY-1){ //strzałka w dół
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.Y++;
             DrawPlayer();
-        } else if (keyPressed == 'd'){
+        } else if (keyPressed == 5 && Player.X < sizeX-1){ //strzałka w prawo
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.X++;
             DrawPlayer();
-        } else if (keyPressed == 'a'){
+        } else if (keyPressed == 4 && Player.X > 0){ //strzałka w lewo
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
             Player.X--;

@@ -18,6 +18,5 @@ int main(){
     engine.Init();
     engine.MainLoop();
     
-    getch();
     endwin();
 }
