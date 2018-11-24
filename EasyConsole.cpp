@@ -23,6 +23,7 @@ public:
         init_pair(3, COLOR_GREEN, -1);
         init_pair(4, COLOR_BLUE, -1);
         init_pair(5, COLOR_MAGENTA, -1);
+        init_pair(6, COLOR_RED | COLOR_YELLOW, -1);
         //ustawianie koloru
         attron(COLOR_PAIR(col));
     }
@@ -50,5 +51,12 @@ public:
             curs_set(0);
         else
             curs_set(1);
+    }
+    
+    void BlinkText(bool a){
+        if (a == true)
+            attron(A_BLINK);
+        else
+            attroff(A_BLINK);
     }
 };

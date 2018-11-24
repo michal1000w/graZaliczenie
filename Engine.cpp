@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <iostream>
 #include "EasyConsole.cpp"
 
 #define sizeX 70
@@ -30,13 +31,49 @@ public:
         DrawPlayer();
         
         while(true){
-            char keyPressed = getch();
-            if (keyPressed == 'q')
+            
+            if (MovePlayer() == 'q') //zatrzymanie pętli
                 break;
+            
+            Enemy();
         }
     }
     
 private:
+    void Enemy(){
+        board[10][10] = '4';
+        UpdateBoard(10, 10);
+    }
+    
+    char MovePlayer(){
+        nodelay(stdscr, true); //non-block input from getch()
+        char keyPressed = getch();
+        
+        if (keyPressed == 'w'){
+            board[Player.Y][Player.X] = ' ';
+            UpdateBoard(Player.Y, Player.X);
+            Player.Y--;
+            DrawPlayer();
+        } else if (keyPressed == 's'){
+            board[Player.Y][Player.X] = ' ';
+            UpdateBoard(Player.Y, Player.X);
+            Player.Y++;
+            DrawPlayer();
+        } else if (keyPressed == 'd'){
+            board[Player.Y][Player.X] = ' ';
+            UpdateBoard(Player.Y, Player.X);
+            Player.X++;
+            DrawPlayer();
+        } else if (keyPressed == 'a'){
+            board[Player.Y][Player.X] = ' ';
+            UpdateBoard(Player.Y, Player.X);
+            Player.X--;
+            DrawPlayer();
+        }
+        
+        return keyPressed;
+    }
+    
     void FillEmpty(){
         for (int y=0; y<sizeY; y++)
             for (int x=0; x<sizeX; x++)
@@ -59,7 +96,7 @@ private:
     void UpdateBoard(int y, int x){
         move(y+1,x+1);
         if (board[y][x] == Player.Char){
-            eCon.Color(2);
+            eCon.Color(6);
             eCon.BoldText(true);
             printw("%c",board[y][x]);
             eCon.Color(1);
