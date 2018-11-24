@@ -4,10 +4,11 @@
 class EasyConsole{
 public:
     void ConsoleInit(){
-        setlocale(LC_ALL, ""); // ustawienie kodowania na UTF-8
+        setlocale(LC_ALL, ""); // ustawienie kodowania na polskie
         initscr(); //inicjacja ekranu konsoli
         noecho(); // nie wyświetla znaku po naciśnięciu klawisza (getch())
         keypad(stdscr, true); //oczytuje wszystkie znaki
+        HideCursor(true); //ukrywanie kursora
     }
     
     void ColorInit() {
@@ -25,7 +26,29 @@ public:
         //ustawianie koloru
         attron(COLOR_PAIR(col));
     }
+    
     void ColorEnd(){
         attroff(COLOR_PAIRS);
+    }
+    
+    void BoldText(bool a){
+        if (a == true)
+            attron(A_BOLD);
+        else
+            attroff(A_BOLD);
+    }
+    
+    void UnderlineText(bool a){
+        if (a == true)
+            attron(A_UNDERLINE);
+        else
+            attroff(A_UNDERLINE);
+    }
+    
+    void HideCursor(bool a){
+        if (a == true)
+            curs_set(0);
+        else
+            curs_set(1);
     }
 };
