@@ -56,6 +56,7 @@ private:
     char MovePlayer(){
         nodelay(stdscr, true); //non-block input from getch()
         char keyPressed = getch();
+        nodelay(stdscr, false);
         
         if (keyPressed == 3 && Player.Y > 0){ //strzałka w górę
             board[Player.Y][Player.X] = Empty;
