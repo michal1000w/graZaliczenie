@@ -21,6 +21,7 @@ private:
     };
     player Player;
     char Empty, Wall, Box;
+    int gravityDelay;
     
 public:
     void Init(){
@@ -35,6 +36,7 @@ public:
         Player.Char = '&';
         Wall = '#';
         Box = '0';
+        gravityDelay = 0;
     }
     
     void MainLoop(){
@@ -44,7 +46,9 @@ public:
         while(true){
             if (MovePlayer() == 'q') //zatrzymanie pętli
                 break;
+            Gravity();
             DrawInfo();
+            eCon.Sleep(50);
         }
     }
     
@@ -121,6 +125,20 @@ private:
         eCon.Color(1);
         printw("Score: %d     ", Player.Score);
         eCon.ColorEnd();
+    }
+    
+    void Gravity(){
+        for (int y=sizeY-2; y>=0; y--)
+            for (int x=0; x<sizeX; x++){
+                if (board[y][x] == Wall && board[y+1][x] == Empty && gravityDelay > 50){
+                    board[y][x] = Empty;
+                    board[y+1][x] = Wall;
+                    UpdateBoard(y, x);
+                    UpdateBoard(y+1,x);
+                    gravityDelay = 0;
+                } else
+                    gravityDelay++;
+            }
     }
     
     void ReadMapFromFile(const string filename){

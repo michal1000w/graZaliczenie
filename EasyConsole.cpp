@@ -62,3 +62,7 @@ void EasyConsole::ClearScr(){
     clear();
     refresh();
 }
+
+void EasyConsole::Sleep(float time){
+    usleep(time * 1000);
+}

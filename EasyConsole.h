@@ -3,6 +3,7 @@
 
 #include <ncurses.h>
 #include <iostream>
+#include <unistd.h>
 
 class EasyConsole{
 public:
@@ -15,6 +16,7 @@ public:
     void HideCursor(bool);
     void BlinkText(bool);
     void ClearScr();
+    void Sleep(float);
 };
 
 #endif
