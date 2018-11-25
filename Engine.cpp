@@ -1,4 +1,6 @@
 #include <ncurses.h>
+#include <iostream>
+#include <fstream>
 #include "EasyConsole.h"
 
 #define sizeX 70
@@ -13,6 +15,8 @@ private:
     struct player{
         int X;
         int Y;
+        int Lifes;
+        int Score;
         char Char;
     };
     player Player;
@@ -23,8 +27,11 @@ public:
         eCon.ClearScr();
         Empty = ' ';
         FillEmpty(); //inicjowanie tablicy zerami
+        ReadMapFromFile("mapy/map1.txt");
         Player.X = sizeX/2;
         Player.Y = sizeY/2;
+        Player.Lifes = 3;
+        Player.Score = 0;
         Player.Char = '&';
         Wall = '#';
         Box = '0';
@@ -37,6 +44,7 @@ public:
         while(true){
             if (MovePlayer() == 'q') //zatrzymanie pętli
                 break;
+            DrawInfo();
         }
     }
     
@@ -66,7 +74,6 @@ private:
             Player.X--;
             DrawPlayer();
         }
-        
         return keyPressed;
     }
     
@@ -105,5 +112,32 @@ private:
     void DrawPlayer(){
         board[Player.Y][Player.X] = Player.Char;
         UpdateBoard(Player.Y,Player.X);
+    }
+    
+    void DrawInfo(){
+        move(sizeY + 2,4);
+        eCon.Color(2);
+        printw("Lifes: %d     ", Player.Lifes);
+        eCon.Color(1);
+        printw("Score: %d     ", Player.Score);
+        eCon.ColorEnd();
+    }
+    
+    void ReadMapFromFile(const string filename){
+        string line;
+        int y = 0;
+        
+        ifstream file;
+        file.open(filename);
+        if (file.is_open())
+        {
+            while ( getline (file,line) )
+            {
+                for (int i = 0; i < line.length(); i++)
+                    board[y][i] = line[i];
+                y++;
+            }
+            file.close();
+        }
     }
 };

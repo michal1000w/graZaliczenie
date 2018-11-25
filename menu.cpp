@@ -11,7 +11,7 @@ public:
     void DrawMenu(int x, int pos){
         while(true){
             eCon.ClearScr();
-            DrawLabel(x, "Boulder Dash");
+            DrawLabel(x, "Projekt Rainbowdash");
             DrawMenuItem(x, "autor: Michal Wieczorek", false);
             DrawLine(x);
             DrawMenuItem(x, "Aby wybrac element uzyj strzalek", false);
