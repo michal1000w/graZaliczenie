@@ -138,7 +138,8 @@ private:
                     UpdateBoard(y+1,x);
                     gravityDelay = 0;
                 } else
-                    gravityDelay++;
+                    if (gravityDelay < 100)
+                        gravityDelay++;
             }
     }
     
