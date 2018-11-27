@@ -56,6 +56,7 @@ public:
         DrawMenuItem(x, " ", false);
         DrawMenuItem(x,"Uzyj strzalek do poruszania sie po planszy;", false);
         DrawMenuItem(x, "Aby wyjsc z gry nacisnij 'q'", false);
+        DrawMenuItem(x, "Aby zrestartowac poziom nacisnij 'r'", false);
         
         DrawMenuItem(x, " ", false);
         DrawMenuItem(x, "Nacisnij dowolny klawisz by wrocic do menu;", false);

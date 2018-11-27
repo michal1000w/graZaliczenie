@@ -21,21 +21,26 @@ private:
     };
     player Player;
     char Empty, Wall, Box;
+    char NextLev;
+    int Level, LevScore;
     int gravityDelay;
     
 public:
-    void Init(){
+    void Init(int Lev = 1){
         eCon.ClearScr();
         Empty = ' ';
-        FillEmpty(); //inicjowanie tablicy zerami
-        ReadMapFromFile("mapy/map1.txt");
-        Player.X = sizeX/2;
-        Player.Y = sizeY/2;
+        Level = Lev;
+        
+        Player.Char = '&';
+        LoadLevel();
+        
+        //Player.X = sizeX/2;
+        //Player.Y = sizeY/2;
         Player.Lifes = 3;
         Player.Score = 0;
-        Player.Char = '&';
         Wall = '#';
         Box = '0';
+        NextLev = '^';
         gravityDelay = 0;
     }
     
@@ -44,8 +49,23 @@ public:
         DrawPlayer();
         
         while(true){
-            if (MovePlayer() == 'q') //zatrzymanie pętli
+            char keyPressed = MovePlayer();
+            if (keyPressed == 'q' || keyPressed == 'Q') //zatrzymanie pętli
                 break;
+            else if (keyPressed == 'r' || keyPressed == 'R'){ //restart level
+                Init(Level);
+                Player.Score = LevScore;
+                MainLoop();
+                break;
+            } else if (keyPressed == (char)230){
+                Level++;
+                Player.Score += 20;
+                LevScore = Player.Score;
+                LoadLevel();
+                eCon.ClearScr();
+                MainLoop();
+                break;
+            }
             Gravity();
             DrawInfo();
             eCon.Sleep(50);
@@ -53,31 +73,76 @@ public:
     }
     
 private:
+    void LoadLevel(){
+        FillEmpty(); //inicjowanie tablicy zerami
+        if (Level == 1)
+            ReadMapFromFile("mapy/map1.txt");
+        else if (Level == 2)
+            ReadMapFromFile("mapy/map2.txt");
+    }
     char MovePlayer(){
         nodelay(stdscr, true); //non-block input from getch()
         char keyPressed = getch();
         nodelay(stdscr, false);
         
         if (keyPressed == 3 && Player.Y > 0){ //strzałka w górę
-            board[Player.Y][Player.X] = Empty;
-            UpdateBoard(Player.Y, Player.X);
-            Player.Y--;
-            DrawPlayer();
+            if (board[Player.Y-1][Player.X] != Box){
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                
+                if (board[Player.Y-1][Player.X] == NextLev)
+                    return (char)230;
+                
+                Player.Y--;
+                DrawPlayer();
+            }
         } else if (keyPressed == 2 && Player.Y < sizeY-1){ //strzałka w dół
-            board[Player.Y][Player.X] = Empty;
-            UpdateBoard(Player.Y, Player.X);
-            Player.Y++;
-            DrawPlayer();
+            if (board[Player.Y+1][Player.X] != Box){
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                
+                if (board[Player.Y+1][Player.X] == NextLev)
+                    return (char)230;
+                
+                Player.Y++;
+                DrawPlayer();
+            }
         } else if (keyPressed == 5 && Player.X < sizeX-1){ //strzałka w prawo
-            board[Player.Y][Player.X] = Empty;
-            UpdateBoard(Player.Y, Player.X);
-            Player.X++;
-            DrawPlayer();
+            if (board[Player.Y][Player.X+1] == Box && board[Player.Y][Player.X+2] == Empty){
+                board[Player.Y][Player.X+2] = Box;
+                UpdateBoard(Player.Y, Player.X+2);
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y,Player.X);
+                Player.X++;
+                DrawPlayer();
+            } else if (board[Player.Y][Player.X+1] != Box){
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                
+                if (board[Player.Y][Player.X+1] == NextLev)
+                    return (char)230;
+                
+                Player.X++;
+                DrawPlayer();
+            }
         } else if (keyPressed == 4 && Player.X > 0){ //strzałka w lewo
-            board[Player.Y][Player.X] = Empty;
-            UpdateBoard(Player.Y, Player.X);
-            Player.X--;
-            DrawPlayer();
+            if (board[Player.Y][Player.X-1] == Box && board[Player.Y][Player.X-2] == Empty){
+                board[Player.Y][Player.X-2] = Box;
+                UpdateBoard(Player.Y, Player.X-2);
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                Player.X--;
+                DrawPlayer();
+            } else if (board[Player.Y][Player.X-1] != Box){
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                
+                if (board[Player.Y][Player.X-1] == NextLev)
+                    return (char)230;
+                
+                Player.X--;
+                DrawPlayer();
+            }
         }
         return keyPressed;
     }
@@ -94,8 +159,24 @@ private:
         printw("\n");
         for (int y=0; y<sizeY; y++){
             printw("|");
-            for (int x=0; x<sizeX; x++)
-                printw("%c",board[y][x]);
+            for (int x=0; x<sizeX; x++){
+                if (board[y][x] == NextLev){
+                    eCon.Color(7);
+                    eCon.BlinkText(true);
+                    eCon.BoldText(true);
+                    printw("%c",board[y][x]);
+                    eCon.Color(1);
+                    eCon.BlinkText(false);
+                    eCon.BoldText(false);
+                } else if (board[y][x] == Box){
+                    eCon.Color(3);
+                    printw("%c",board[y][x]);
+                    eCon.Color(1);
+                } else {
+                    eCon.Color(1);
+                    printw("%c",board[y][x]);
+                }
+            }
             printw("|\n");
         }
         for (int i=0; i<sizeX+2; i++) printw("=");
@@ -109,7 +190,20 @@ private:
             printw("%c",board[y][x]);
             eCon.Color(1);
             eCon.BoldText(false);
+        } else if (board[y][x] == NextLev){
+            eCon.Color(7);
+            eCon.BlinkText(true);
+            eCon.BoldText(true);
+            printw("%c",board[y][x]);
+            eCon.Color(1);
+            eCon.BlinkText(false);
+            eCon.BoldText(false);
+        } else if (board[y][x] == Box){
+            eCon.Color(3);
+            printw("%c",board[y][x]);
+            eCon.Color(1);
         } else {
+            eCon.Color(1);
             printw("%c",board[y][x]);
         }
     }
@@ -125,15 +219,17 @@ private:
         printw("Lifes: %d     ", Player.Lifes);
         eCon.Color(1);
         printw("Score: %d     ", Player.Score);
+        eCon.Color(6);
+        printw("Level: %d   ", Level);
         eCon.ColorEnd();
     }
     
     void Gravity(){
         for (int y=sizeY-2; y>=0; y--)
             for (int x=0; x<sizeX; x++){
-                if (board[y][x] == Wall && board[y+1][x] == Empty && gravityDelay > 50){
+                if (board[y][x] == Box && board[y+1][x] == Empty && gravityDelay > 50){
                     board[y][x] = Empty;
-                    board[y+1][x] = Wall;
+                    board[y+1][x] = Box;
                     UpdateBoard(y, x);
                     UpdateBoard(y+1,x);
                     gravityDelay = 0;
@@ -153,8 +249,13 @@ private:
         {
             while ( getline (file,line) )
             {
-                for (int i = 0; i < line.length(); i++)
+                for (int i = 0; i < line.length(); i++){
                     board[y][i] = line[i];
+                    if (board[y][i] == Player.Char){
+                        Player.Y = y;
+                        Player.X = i;
+                    }
+                }
                 y++;
             }
             file.close();
