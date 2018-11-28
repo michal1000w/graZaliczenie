@@ -15,6 +15,7 @@ public:
     void DrawMenuSterowanie(int);
     char DrawEndMenu(int,int);
 private:
+    void DrawRainbowLabel(int, string);
     void DrawLabel(int, string);
     void DrawMenuItem(int, string, bool);
     void DrawLine(int);

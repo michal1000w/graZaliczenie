@@ -3,7 +3,8 @@
 void Menu::DrawMenu(int x, int pos){
         while(true){
             eCon.ClearScr();
-            DrawLabel(x, "Projekt Rainbowdash");
+            //DrawLabel(x, "Projekt Rainbowdash");
+            DrawRainbowLabel(x, "Projekt Rainbowdash");
             DrawMenuItem(x, "autor: Michal Wieczorek", false);
             DrawLine(x);
             DrawMenuItem(x, "Aby wybrac element uzyj strzalek", false);
@@ -74,6 +75,48 @@ char Menu::DrawEndMenu(int x, int Score){
         keyPressed = getch();
     
     return keyPressed;
+}
+
+void Menu::DrawRainbowLabel(int x, string text){
+    for (int i=0; i<x; i++) printw("="); //rysowanie górnej linii
+    int boki = int(x - text.length())/2;
+    printw("\n|");
+    eCon.Color(3);
+    if ((boki*2)+text.length() == x){
+        boki--;
+        for (int i = 0; i<boki; i++) printw(" ");
+        
+        int j=1;
+        for (int i=0; i<text.length(); i++){
+            eCon.Color(j);
+            printw("%c",text[i]);
+            if (j < 7)
+                j++;
+            else j = 1;
+        }
+        eCon.ColorEnd();
+        
+        for (int i = 0; i<boki; i++) printw(" ");
+    } else {
+        boki--;
+        for (int i = 0; i<boki; i++) printw(" ");
+        
+        int j=1;
+        for (int i=0; i<text.length(); i++){
+            eCon.Color(j);
+            printw("%c",text[i]);
+            if (j < 7)
+                j++;
+            else j = 1;
+        }
+        eCon.ColorEnd();
+        
+        for (int i = 0; i<=boki; i++) printw(" ");
+    }
+    eCon.ColorEnd();
+    printw("|\n");
+    for (int i=0; i<x; i++) printw("=");
+    printw("\n");
 }
 
 void Menu::DrawLabel(int x, string text){
