@@ -20,10 +20,11 @@ private:
         char Char;
     };
     player Player;
-    char Empty, Wall, Box;
+    char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion;
     char NextLev;
     int Level, LevScore;
-    int gravityDelay;
+    int gravityDelay, shotDelay, sDelay;
+    bool shot;
     
 public:
     void Init(int Lev = 1){
@@ -38,10 +39,16 @@ public:
         //Player.Y = sizeY/2;
         Player.Lifes = 3;
         Player.Score = 0;
-        Wall = '#';
+        Wall = 'H';
         Box = '0';
+        Dirt = '#';
         NextLev = '^';
-        gravityDelay = 0;
+        LaserPoz = '-';
+        LaserPion = '|';
+        StrzalPoz = 'o';
+        StrzalPion = '*';
+        shotDelay = sDelay = gravityDelay = 0;
+        shot = false;
     }
     
     void MainLoop(){
@@ -57,7 +64,7 @@ public:
                 Player.Score = LevScore;
                 MainLoop();
                 break;
-            } else if (keyPressed == (char)230){
+            } else if (keyPressed == (char)230){ //next level
                 Level++;
                 Player.Score += 20;
                 LevScore = Player.Score;
@@ -67,6 +74,7 @@ public:
                 break;
             }
             Gravity();
+            Strzaly();
             DrawInfo();
             eCon.Sleep(50);
         }
@@ -85,7 +93,7 @@ private:
         char keyPressed = getch();
         nodelay(stdscr, false);
         
-        if (keyPressed == 3 && Player.Y > 0){ //strzałka w górę
+        if (keyPressed == 3 && Player.Y > 0 && board[Player.Y-1][Player.X] != Wall){ //strzałka w górę
             if (board[Player.Y-1][Player.X] != Box){
                 board[Player.Y][Player.X] = Empty;
                 UpdateBoard(Player.Y, Player.X);
@@ -96,7 +104,7 @@ private:
                 Player.Y--;
                 DrawPlayer();
             }
-        } else if (keyPressed == 2 && Player.Y < sizeY-1){ //strzałka w dół
+        } else if (keyPressed == 2 && Player.Y < sizeY-1 && board[Player.Y+1][Player.X] != Wall){ //strzałka w dół
             if (board[Player.Y+1][Player.X] != Box){
                 board[Player.Y][Player.X] = Empty;
                 UpdateBoard(Player.Y, Player.X);
@@ -107,7 +115,7 @@ private:
                 Player.Y++;
                 DrawPlayer();
             }
-        } else if (keyPressed == 5 && Player.X < sizeX-1){ //strzałka w prawo
+        } else if (keyPressed == 5 && Player.X < sizeX-1 && board[Player.Y][Player.X+1] != Wall){ //strzałka w prawo
             if (board[Player.Y][Player.X+1] == Box && board[Player.Y][Player.X+2] == Empty){
                 board[Player.Y][Player.X+2] = Box;
                 UpdateBoard(Player.Y, Player.X+2);
@@ -125,7 +133,7 @@ private:
                 Player.X++;
                 DrawPlayer();
             }
-        } else if (keyPressed == 4 && Player.X > 0){ //strzałka w lewo
+        } else if (keyPressed == 4 && Player.X > 0 && board[Player.Y][Player.X-1] != Wall){ //strzałka w lewo
             if (board[Player.Y][Player.X-1] == Box && board[Player.Y][Player.X-2] == Empty){
                 board[Player.Y][Player.X-2] = Box;
                 UpdateBoard(Player.Y, Player.X-2);
@@ -172,6 +180,9 @@ private:
                     eCon.Color(3);
                     printw("%c",board[y][x]);
                     eCon.Color(1);
+                } else if (board[y][x] == Wall || board[y][x] == LaserPoz || board[y][x] == LaserPion){
+                    eCon.ColorEnd();
+                    printw("%c",board[y][x]);
                 } else {
                     eCon.Color(1);
                     printw("%c",board[y][x]);
@@ -202,6 +213,12 @@ private:
             eCon.Color(3);
             printw("%c",board[y][x]);
             eCon.Color(1);
+        } else if (board[y][x] == Wall || board[y][x] == LaserPoz || board[y][x] == LaserPion){
+            eCon.ColorEnd();
+            printw("%c",board[y][x]);
+        } else if (board[y][x] == StrzalPoz || board[y][x] == StrzalPion){
+            eCon.Color(2);
+            printw("%c",board[y][x]);
         } else {
             eCon.Color(1);
             printw("%c",board[y][x]);
@@ -225,18 +242,62 @@ private:
     }
     
     void Gravity(){
-        for (int y=sizeY-2; y>=0; y--)
-            for (int x=0; x<sizeX; x++){
-                if (board[y][x] == Box && board[y+1][x] == Empty && gravityDelay > 50){
-                    board[y][x] = Empty;
-                    board[y+1][x] = Box;
-                    UpdateBoard(y, x);
-                    UpdateBoard(y+1,x);
-                    gravityDelay = 0;
-                } else
-                    if (gravityDelay < 100)
-                        gravityDelay++;
-            }
+        if (gravityDelay > 1){
+            for (int y=sizeY-2; y>=0; y--)
+                for (int x=0; x<sizeX; x++)
+                    if (board[y][x] == Box && board[y+1][x] == Empty){
+                        board[y][x] = Empty;
+                        board[y+1][x] = Box;
+                        UpdateBoard(y, x);
+                        UpdateBoard(y+1,x);
+                        gravityDelay = 0;
+                    }
+        } else
+            if (gravityDelay < 3)
+                gravityDelay++;
+    }
+    
+    void Strzaly(){
+        shot = false;
+        if (sDelay > 10) { //Rysowanie pierwszego strzału
+        for (int y=sizeY; y>=0; y--)
+            for (int x=sizeX; x>=0; x--)
+                //if (sDelay > 1620){
+                    if (board[y][x] == LaserPoz && board[y][x+1] == ' '){ //rysowanie pierwszego strzału Poziom
+                        board[y][x+1] = StrzalPoz;
+                        UpdateBoard(y, x+1);
+                        sDelay = 0;
+                        shot = true;
+                    } else if (board[y][x] == LaserPion && board[y+1][x] == ' '){ //rysowanie pierwszego strzału Pion
+                        board[y+1][x] = StrzalPion;
+                        UpdateBoard(y+1, x);
+                        sDelay = 0;
+                        shot = true;
+                    }
+                //}
+        }else sDelay++;
+        
+        if (shotDelay > 2 && shot == false){ //ruch strzałów
+            for (int y=sizeY; y>=0; y--)
+                for (int x=sizeX; x>=0; x--)
+                    if (board[y][x] == StrzalPoz && (board[y][x+1] == ' ' || board[y][x+1] == Dirt || board[y][x+1] == Wall)){ //poruszanie się strzały Poziom
+                        board[y][x] = Empty;
+                        UpdateBoard(y, x);
+                        if (board[y][x+1] != Dirt && board[y][x+1] != Wall && !(x+1 > sizeX-1)){
+                            board[y][x+1] = StrzalPoz;
+                            UpdateBoard(y, x+1);
+                        }
+                        shotDelay = 0;
+                    } else if (board[y][x] == StrzalPion && (board[y+1][x] == ' ' || board[y+1][x] == Dirt || board[y+1][x] == Wall)){ //poruszanie się strzału pion
+                        board[y][x] = Empty;
+                        UpdateBoard(y, x);
+                        if (board[y+1][x] != Dirt && board[y+1][x] != Wall && !(y+1 > sizeY-2)){
+                            board[y+1][x] = StrzalPion;
+                            UpdateBoard(y+1, x);
+                        }
+                        shotDelay = 0;
+                    }
+        } else shotDelay++;
     }
     
     void ReadMapFromFile(const string filename){
