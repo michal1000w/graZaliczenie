@@ -4,7 +4,7 @@
 */
 
 #include "Engine.cpp"
-#include "menu.cpp"
+#include "menu.h"
 
 int main(){
     EasyConsole eCon;

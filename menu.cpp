@@ -1,14 +1,6 @@
-#include "EasyConsole.h"
-#include <ncurses.h>
-#include <string>
+#include "menu.h"
 
-using namespace std;
-
-class Menu{
-private:
-    EasyConsole eCon;
-public:
-    void DrawMenu(int x, int pos){
+void Menu::DrawMenu(int x, int pos){
         while(true){
             eCon.ClearScr();
             DrawLabel(x, "Projekt Rainbowdash");
@@ -48,9 +40,9 @@ public:
                 break;
             }
         }
-    }
+}
     
-    void DrawMenuSterowanie(int x){
+void Menu::DrawMenuSterowanie(int x){
         eCon.ClearScr();
         DrawLabel(x, "Sterowanie");
         DrawMenuItem(x, " ", false);
@@ -63,10 +55,28 @@ public:
         DrawMenuItem(x, " ", false);
         DrawLine(x);
         getch();
-    }
+}
+
+char Menu::DrawEndMenu(int x, int Score){
+    eCon.ClearScr();
+    DrawLabel(x, "Koniec gry");
+    DrawMenuItem(x, " ", false);
+    string score = "Twoj wynik: " + to_string(Score);
+    DrawMenuItem(x, score, false);
+    DrawMenuItem(x, " ", false);
+    DrawMenuItem(x, "Aby wyjsc nacisnij q", false);
+    DrawMenuItem(x, "Aby zaczac nowa gre nacisnij r", false);
+    DrawMenuItem(x, " ", false);
+    DrawLine(x);
     
-private:
-    void DrawLabel(int x, string text){
+    char keyPressed = ' ';
+    while (keyPressed != 'q' && keyPressed != 'r')
+        keyPressed = getch();
+    
+    return keyPressed;
+}
+
+void Menu::DrawLabel(int x, string text){
         for (int i=0; i<x; i++) printw("="); //rysowanie górnej linii
         int boki = int(x - text.length())/2;
         printw("\n|");
@@ -86,9 +96,9 @@ private:
         printw("|\n");
         for (int i=0; i<x; i++) printw("=");
         printw("\n");
-    }
+}
     
-    void DrawMenuItem(int x, string text, bool selected){
+void Menu::DrawMenuItem(int x, string text, bool selected){
         int boki = int(x - text.length())/2;
         printw("|");
         
@@ -131,10 +141,9 @@ private:
             }
         }
         printw("|\n");
-    }
+}
     
-    void DrawLine(int x){
+void Menu::DrawLine(int x){
         for (int i=0; i<x; i++) printw("=");
         printw("\n");
-    }
-};
+}

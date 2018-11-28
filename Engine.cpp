@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "EasyConsole.h"
+#include "menu.h"
 
 #define sizeX 70
 #define sizeY 20
@@ -74,13 +75,35 @@ public:
                 break;
             }
             Gravity();
-            Strzaly();
+            
+            if (Strzaly() == (char)230){ //uderzenie w strzały
+                Player.Lifes--;
+                LoadLevel();
+                eCon.ClearScr();
+                MainLoop();
+                break;
+            }
+            
+            if (Player.Lifes <= 0){ //koniec gry
+                char keyPressed = EndPage();
+                if (keyPressed == 'r'){
+                    Init();
+                    MainLoop();
+                }
+                break;
+            }
+            
             DrawInfo();
             eCon.Sleep(50);
         }
     }
     
 private:
+    char EndPage(){
+        Menu menu;
+        return menu.DrawEndMenu(70, Player.Score);
+    }
+    
     void LoadLevel(){
         FillEmpty(); //inicjowanie tablicy zerami
         if (Level == 1)
@@ -88,6 +111,7 @@ private:
         else if (Level == 2)
             ReadMapFromFile("mapy/map2.txt");
     }
+    
     char MovePlayer(){
         nodelay(stdscr, true); //non-block input from getch()
         char keyPressed = getch();
@@ -173,19 +197,20 @@ private:
                     eCon.BlinkText(true);
                     eCon.BoldText(true);
                     printw("%c",board[y][x]);
-                    eCon.Color(1);
+                    eCon.ColorEnd();
                     eCon.BlinkText(false);
                     eCon.BoldText(false);
                 } else if (board[y][x] == Box){
                     eCon.Color(3);
                     printw("%c",board[y][x]);
-                    eCon.Color(1);
+                    eCon.ColorEnd();
                 } else if (board[y][x] == Wall || board[y][x] == LaserPoz || board[y][x] == LaserPion){
                     eCon.ColorEnd();
                     printw("%c",board[y][x]);
                 } else {
                     eCon.Color(1);
                     printw("%c",board[y][x]);
+                    eCon.ColorEnd();
                 }
             }
             printw("|\n");
@@ -199,29 +224,31 @@ private:
             eCon.Color(6);
             eCon.BoldText(true);
             printw("%c",board[y][x]);
-            eCon.Color(1);
+            eCon.ColorEnd();
             eCon.BoldText(false);
         } else if (board[y][x] == NextLev){
             eCon.Color(7);
             eCon.BlinkText(true);
             eCon.BoldText(true);
             printw("%c",board[y][x]);
-            eCon.Color(1);
+            eCon.ColorEnd();
             eCon.BlinkText(false);
             eCon.BoldText(false);
         } else if (board[y][x] == Box){
             eCon.Color(3);
             printw("%c",board[y][x]);
-            eCon.Color(1);
+            eCon.ColorEnd();
         } else if (board[y][x] == Wall || board[y][x] == LaserPoz || board[y][x] == LaserPion){
             eCon.ColorEnd();
             printw("%c",board[y][x]);
         } else if (board[y][x] == StrzalPoz || board[y][x] == StrzalPion){
             eCon.Color(2);
             printw("%c",board[y][x]);
+            eCon.ColorEnd();
         } else {
             eCon.Color(1);
             printw("%c",board[y][x]);
+            eCon.ColorEnd();
         }
     }
     
@@ -257,7 +284,7 @@ private:
                 gravityDelay++;
     }
     
-    void Strzaly(){
+    char Strzaly(){
         shot = false;
         if (sDelay > 10) { //Rysowanie pierwszego strzału
         for (int y=sizeY; y>=0; y--)
@@ -296,8 +323,12 @@ private:
                             UpdateBoard(y+1, x);
                         }
                         shotDelay = 0;
+                    } else if ((board[y][x] == StrzalPion && board[y+1][x] == Player.Char) || (board[y][x] == StrzalPoz && board[y][x+1] == Player.Char)){  //uderzenie w gracza
+                        return (char)230;
                     }
         } else shotDelay++;
+        
+        return (char)210;
     }
     
     void ReadMapFromFile(const string filename){
