@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <iostream>
 #include <unistd.h>
+#include <time.h>
 
 class EasyConsole{
 public:

@@ -6,7 +6,8 @@ void EasyConsole::ConsoleInit(){
         noecho(); // nie wyświetla znaku po naciśnięciu klawisza (getch())
         keypad(stdscr, true); //oczytuje wszystkie znaki
         HideCursor(true); //ukrywanie kursora
-    }
+        srand(time(NULL)); //resetowanie czasu
+}
     
 void EasyConsole::ColorInit() {
         start_color();

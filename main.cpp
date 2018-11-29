@@ -13,7 +13,6 @@ int main(){
     
     Menu menu;
     menu.DrawMenu(70, 0);
-    
     Engine engine;
     engine.Init();
     engine.MainLoop();
