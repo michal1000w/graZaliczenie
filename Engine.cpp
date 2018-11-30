@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #include "EasyConsole.h"
 #include "menu.h"
@@ -22,7 +23,7 @@ private:
         char Char;
     };
     player Player;
-    char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion;
+    char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion, Diament;
     char NextLev;
     int Level, LevScore;
     int gravityDelay, shotDelay, sDelay, enemyDelay;
@@ -51,6 +52,7 @@ public:
         StrzalPoz = 'o';
         StrzalPion = '*';
         Enemy = '$';
+        Diament = '@';
         shotDelay = sDelay = gravityDelay = enemyDelay = 0;
         shot = false;
     }
@@ -129,6 +131,8 @@ private:
                 
                 if (board[Player.Y-1][Player.X] == NextLev)
                     return (char)230;
+                else if (board[Player.Y-1][Player.X] == Diament)
+                    Player.Score += 10;
                 
                 Player.Y--;
                 DrawPlayer();
@@ -140,6 +144,8 @@ private:
                 
                 if (board[Player.Y+1][Player.X] == NextLev)
                     return (char)230;
+                else if (board[Player.Y+1][Player.X] == Diament)
+                    Player.Score += 10;
                 
                 Player.Y++;
                 DrawPlayer();
@@ -159,6 +165,9 @@ private:
                 if (board[Player.Y][Player.X+1] == NextLev)
                     return (char)230;
                 
+                if (board[Player.Y][Player.X+1] == Diament)
+                    Player.Score += 10;
+                
                 Player.X++;
                 DrawPlayer();
             }
@@ -176,6 +185,9 @@ private:
                 
                 if (board[Player.Y][Player.X-1] == NextLev)
                     return (char)230;
+                
+                if (board[Player.Y][Player.X-1] == Diament)
+                    Player.Score += 10;
                 
                 Player.X--;
                 DrawPlayer();
@@ -214,6 +226,10 @@ private:
                     printw("%c",board[y][x]);
                 } else if (board[y][x] == Enemy){
                     eCon.Color(5);
+                    printw("%c",board[y][x]);
+                    eCon.ColorEnd();
+                } else if (board[y][x] == Diament){
+                    eCon.Color(7);
                     printw("%c",board[y][x]);
                     eCon.ColorEnd();
                 } else {
@@ -256,6 +272,10 @@ private:
             eCon.ColorEnd();
         } else if (board[y][x] == Enemy){
             eCon.Color(5);
+            printw("%c",board[y][x]);
+            eCon.ColorEnd();
+        } else if (board[y][x] == Diament){
+            eCon.Color(7);
             printw("%c",board[y][x]);
             eCon.ColorEnd();
         } else {
@@ -320,18 +340,18 @@ private:
         if (shotDelay > 2 && shot == false){ //ruch strzałów
             for (int y=sizeY; y>=0; y--)
                 for (int x=sizeX; x>=0; x--)
-                    if (board[y][x] == StrzalPoz && (board[y][x+1] == Empty || board[y][x+1] == Dirt || board[y][x+1] == Wall)){ //poruszanie się strzały Poziom
+                    if (board[y][x] == StrzalPoz && (board[y][x+1] == Empty || board[y][x+1] == Dirt || board[y][x+1] == Wall || board[y][x+1] == Enemy || board[y][x+1] == Box || board[y][x+1] == Diament)){ //poruszanie się strzały Poziom
                         board[y][x] = Empty;
                         UpdateBoard(y, x);
-                        if (board[y][x+1] != Dirt && board[y][x+1] != Wall && !(x+1 > sizeX-1)){
+                        if (board[y][x+1] != Dirt && board[y][x+1] != Wall && !(x+1 > sizeX-1) && board[y][x+1] != Enemy && board[y][x+1] != Box && board[y][x+1] != Diament){
                             board[y][x+1] = StrzalPoz;
                             UpdateBoard(y, x+1);
                         }
                         shotDelay = 0;
-                    } else if (board[y][x] == StrzalPion && (board[y+1][x] == Empty || board[y+1][x] == Dirt || board[y+1][x] == Wall)){ //poruszanie się strzału pion
+                    } else if (board[y][x] == StrzalPion && (board[y+1][x] == Empty || board[y+1][x] == Dirt || board[y+1][x] == Wall || board[y+1][x] == Enemy || board[y+1][x] == Box || board[y+1][x] == Diament)){ //poruszanie się strzału pion
                         board[y][x] = Empty;
                         UpdateBoard(y, x);
-                        if (board[y+1][x] != Dirt && board[y+1][x] != Wall && !(y+1 > sizeY-2)){
+                        if (board[y+1][x] != Dirt && board[y+1][x] != Wall && !(y+1 > sizeY-2) && board[y+1][x] != Enemy && board[y+1][x] != Box && board[y+1][x] != Diament){
                             board[y+1][x] = StrzalPion;
                             UpdateBoard(y+1, x);
                         }
@@ -344,63 +364,95 @@ private:
         return (char)210;
     }
     
-    void EnemyMove(){ // poprawić bo zbugowane
+    void EnemyMove(){ // zrobić lepsze AI, niekoniecznie losowe
+        vector <int> przesunieci;
+        bool czyBreak = false;
         if (enemyDelay > 7){
             for (int y=0;y<sizeY;y++)
                 for (int x=0;x<sizeX;x++){
                     int kierunek = rand()%4 + 1;
-                    if (board[y][x] == Enemy && enemyDelay > 10600){
+                    if (board[y][x] == Enemy){
+                        if (przesunieci.size() >= 2)
+                            for (int i=0; i < przesunieci.size()/2; i++)
+                                if (y == przesunieci[i*2] && x == przesunieci[i*2 + 1]){ //żeby nie przesuwał po raz drugi tego samego
+                                    czyBreak = true;
+                                    break;
+                                }
+                        if (czyBreak == true){
+                            break;
+                        }
+                        
                         if (board[y][x+1] == Empty && kierunek == 1){ //prawo (puste)
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y][x+1] = Enemy;
                             UpdateBoard(y, x+1);
                             enemyDelay = 0;
+                            przesunieci.push_back(y);
+                            przesunieci.push_back(x+1);
                         } else if (board[y][x-1] == Empty && kierunek == 2){ //lewo (puste)
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y][x-1] = Enemy;
                             UpdateBoard(y, x-1);
                             enemyDelay = 0;
+                            przesunieci.push_back(y);
+                            przesunieci.push_back(x-1);
                         } else if (board[y+1][x] == Empty && kierunek == 3){ // dół (puste)
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y+1][x] = Enemy;
                             UpdateBoard(y+1, x);
                             enemyDelay = 0;
+                            przesunieci.push_back(y+1);
+                            przesunieci.push_back(x);
                         } else if (board[y-1][x] == Empty && kierunek == 4){ //góra (puste)
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y-1][x] = Enemy;
                             UpdateBoard(y-1, x);
                             enemyDelay = 0;
+                            przesunieci.push_back(y-1);
+                            przesunieci.push_back(x);
                         } else if (board[y][x+1] != Empty && kierunek == 1 && board[y][x-1] == Empty){ //lewo gdy w prawo nie można
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y][x-1] = Enemy;
                             UpdateBoard(y, x-1);
                             enemyDelay = 0;
+                            przesunieci.push_back(y);
+                            przesunieci.push_back(x-1);
                         } else if (board[y][x-1] != Empty && kierunek == 2 && board[y][x+1] == Empty){ //prawo gdy w lewo nie można
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y][x+1] = Enemy;
                             UpdateBoard(y, x+1);
                             enemyDelay = 0;
+                            przesunieci.push_back(y);
+                            przesunieci.push_back(x+1);
                         } else if (board[y+1][x] != Empty && kierunek == 3 && board[y-1][x] == Empty){ //góra, gdy w dół nie można
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y-1][x] = Enemy;
                             UpdateBoard(y-1, x);
                             enemyDelay = 0;
+                            przesunieci.push_back(y-1);
+                            przesunieci.push_back(x);
                         } else if (board[y-1][x] != Empty && kierunek == 4 && board[y+1][x] == Empty){ //dół, gdy w górę nie można
                             board[y][x] = Empty;
                             UpdateBoard(y, x);
                             board[y+1][x] = Enemy;
                             UpdateBoard(y+1, x);
                             enemyDelay = 0;
-                        } else enemyDelay++;
+                            przesunieci.push_back(y+1);
+                            przesunieci.push_back(x);
+                        }
                         
-                    } else enemyDelay++;
+                    }
+                    if (czyBreak == true){
+                        czyBreak = false;
+                        continue;
+                    }
                 }
         } else if (enemyDelay < 10) enemyDelay++;
     }
