@@ -86,6 +86,7 @@ public:
             
             if (Strzaly() == (char)230){ //uderzenie w strzały
                 Player.Lifes--;
+                LevScore = Player.Score;
                 LoadLevel();
                 eCon.ClearScr();
                 MainLoop();
