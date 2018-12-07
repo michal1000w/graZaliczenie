@@ -6,13 +6,15 @@
 #include "Engine.cpp"
 #include "menu.h"
 
+extern const int sizeX;
+
 int main(){
     EasyConsole eCon;
     eCon.ConsoleInit();
     eCon.ColorInit();
     
     Menu menu;
-    menu.DrawMenu(70, 0);
+    menu.DrawMenu(sizeX, 0);
     Engine engine;
     engine.Init();
     engine.MainLoop();

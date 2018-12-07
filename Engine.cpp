@@ -6,8 +6,11 @@
 #include "EasyConsole.h"
 #include "menu.h"
 
-#define sizeX 70
-#define sizeY 20
+//#define sizeX 70
+//#define sizeY 20
+
+const int sizeX = 70;
+const int sizeY = 20;
 
 using namespace std;
 
