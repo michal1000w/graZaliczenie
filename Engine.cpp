@@ -26,6 +26,7 @@ private:
         char Char;
     };
     player Player;
+    player PoczPlayer;
     char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion, Diament;
     char NextLev;
     int Level, LevScore;
@@ -87,7 +88,10 @@ public:
             if (Strzaly() == (char)230){ //uderzenie w strzały
                 Player.Lifes--;
                 LevScore = Player.Score;
-                LoadLevel();
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y,Player.X);
+                Player.X = PoczPlayer.X;
+                Player.Y = PoczPlayer.Y;
                 eCon.ClearScr();
                 MainLoop();
                 break;
@@ -112,7 +116,7 @@ public:
 private:
     char EndPage(){
         Menu menu;
-        return menu.DrawEndMenu(70, Player.Score);
+        return menu.DrawEndMenu(sizeX, Player.Score);
     }
     
     void LoadLevel(){
@@ -327,12 +331,14 @@ private:
         for (int y=sizeY; y>=0; y--)
             for (int x=sizeX; x>=0; x--)
                 //if (sDelay > 1620){
-                    if (board[y][x] == LaserPoz && board[y][x+1] == Empty){ //rysowanie pierwszego strzału Poziom
+                    if (board[y][x] == LaserPoz && (board[y][x+1] == Empty || board[y][x+1] == Player.Char)){ //rysowanie pierwszego strzału Poziom
+                        if (board[y][x+1] == Player.Char) return (char)230;
                         board[y][x+1] = StrzalPoz;
                         UpdateBoard(y, x+1);
                         sDelay = 0;
                         shot = true;
-                    } else if (board[y][x] == LaserPion && board[y+1][x] == Empty){ //rysowanie pierwszego strzału Pion
+                    } else if (board[y][x] == LaserPion && (board[y+1][x] == Empty || board[y+1][x] == Player.Char)){ //rysowanie pierwszego strzału Pion
+                        if (board[y+1][x] == Player.Char) return (char)230;
                         board[y+1][x] = StrzalPion;
                         UpdateBoard(y+1, x);
                         sDelay = 0;
@@ -476,6 +482,8 @@ private:
                     if (board[y][i] == Player.Char){
                         Player.Y = y;
                         Player.X = i;
+                        PoczPlayer.Y = y;
+                        PoczPlayer.X = i;
                     }
                 }
                 y++;
