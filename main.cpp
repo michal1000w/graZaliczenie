@@ -3,7 +3,7 @@
     autor: Michał Wieczorek
 */
 
-#include "Engine.cpp"
+#include "Engine.h"
 #include "menu.h"
 
 extern const int sizeX;
@@ -14,8 +14,8 @@ int main(){
     eCon.ColorInit();
     
     Menu menu;
-    printw("Przed rozpoczęściem skonfiguruj okienko konsoli\n");
-    printw("Aby przejść do konfiguracji naciśnij dowolny klawisz");
+    printw("Przed rozpoczeciem skonfiguruj okienko konsoli\n");
+    printw("Aby przejsc do konfiguracji nacisnij dowolny klawisz");
     getch();
     menu.DrawConSize(sizeY+4, sizeX+28);
     menu.DrawMenu(sizeX+28, 0);

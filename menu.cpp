@@ -91,9 +91,9 @@ void Menu::DrawConSize(int y, int x){
         }
         
         move(3,3);
-        printw("Zwiększaj rozmiary konsoli aż cała tabela będzie widoczna");
+        printw("Zwiekszaj rozmiary konsoli az cala tabela bedzie widoczna");
         move(4,3);
-        printw("Aby zakończyć konfigurację naciśnij enter");
+        printw("Aby zakonczyc konfiguracje nacisnij Enter");
         keyPressed = getch();
     }
     while (keyPressed != 10);
