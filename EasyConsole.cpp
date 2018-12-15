@@ -23,6 +23,7 @@ void EasyConsole::Color(int col){
         init_pair(5, COLOR_MAGENTA, -1);
         init_pair(6, COLOR_YELLOW, -1);
         init_pair(7, COLOR_CYAN, -1);
+        init_pair(8, COLOR_WHITE, COLOR_WHITE);
         //ustawianie koloru
         attron(COLOR_PAIR(col));
     }

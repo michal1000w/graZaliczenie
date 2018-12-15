@@ -14,7 +14,10 @@ int main(){
     eCon.ColorInit();
     
     Menu menu;
-    menu.DrawMenu(sizeX, 0);
+    printw("Przed rozpoczęściem skonfiguruj okienko konsoli\n");
+    printw("Aby przejść do konfiguracji naciśnij dowolny klawisz");
+    menu.DrawConSize(sizeY+4, sizeX+28);
+    menu.DrawMenu(sizeX+28, 0);
     Engine engine;
     engine.Init();
     engine.MainLoop();

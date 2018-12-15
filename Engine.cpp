@@ -29,7 +29,7 @@ private:
     player PoczPlayer;
     char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion, Diament;
     char NextLev;
-    int Level, LevScore;
+    int Level, LevScore, LevLifes;
     int gravityDelay, shotDelay, sDelay, enemyDelay;
     bool shot;
     char Enemy;
@@ -58,19 +58,21 @@ public:
         Enemy = '$';
         Diament = '@';
         shotDelay = sDelay = gravityDelay = enemyDelay = 0;
+        LevLifes = Player.Lifes;
         shot = false;
     }
     
     void MainLoop(){
         DrawFullBoard();
         DrawPlayer();
+        DrawLegend();
         
         while(true){
             char keyPressed = MovePlayer();
             if (keyPressed == 'q' || keyPressed == 'Q') //zatrzymanie pętli
                 break;
             else if (keyPressed == 'r' || keyPressed == 'R'){ //restart level
-                Init(Level, Player.Lifes);
+                Init(Level, LevLifes);
                 Player.Score = LevScore;
                 MainLoop();
                 break;
@@ -78,6 +80,7 @@ public:
                 Level++;
                 Player.Score += 20;
                 LevScore = Player.Score;
+                LevLifes = Player.Lifes;
                 LoadLevel();
                 eCon.ClearScr();
                 MainLoop();
@@ -87,7 +90,7 @@ public:
             
             if (Strzaly() == (char)230){ //uderzenie w strzały
                 Player.Lifes--;
-                LevScore = Player.Score;
+                //LevScore = Player.Score;
                 board[Player.Y][Player.X] = Empty;
                 UpdateBoard(Player.Y,Player.X);
                 Player.X = PoczPlayer.X;
@@ -229,7 +232,7 @@ private:
                     eCon.Color(3);
                     printw("%c",board[y][x]);
                     eCon.ColorEnd();
-                } else if (board[y][x] == Wall || board[y][x] == LaserPoz || board[y][x] == LaserPion){
+                } else if (board[y][x] == LaserPoz || board[y][x] == LaserPion){
                     eCon.ColorEnd();
                     printw("%c",board[y][x]);
                 } else if (board[y][x] == Enemy){
@@ -238,6 +241,10 @@ private:
                     eCon.ColorEnd();
                 } else if (board[y][x] == Diament){
                     eCon.Color(7);
+                    printw("%c",board[y][x]);
+                    eCon.ColorEnd();
+                } else if (board[y][x] == Wall){
+                    eCon.Color(8);
                     printw("%c",board[y][x]);
                     eCon.ColorEnd();
                 } else {
@@ -271,7 +278,7 @@ private:
             eCon.Color(3);
             printw("%c",board[y][x]);
             eCon.ColorEnd();
-        } else if (board[y][x] == Wall || board[y][x] == LaserPoz || board[y][x] == LaserPion){
+        } else if (board[y][x] == LaserPoz || board[y][x] == LaserPion){
             eCon.ColorEnd();
             printw("%c",board[y][x]);
         } else if (board[y][x] == StrzalPoz || board[y][x] == StrzalPion){
@@ -284,6 +291,10 @@ private:
             eCon.ColorEnd();
         } else if (board[y][x] == Diament){
             eCon.Color(7);
+            printw("%c",board[y][x]);
+            eCon.ColorEnd();
+        } else if (board[y][x] == Wall){
+            eCon.Color(8);
             printw("%c",board[y][x]);
             eCon.ColorEnd();
         } else {
@@ -301,12 +312,98 @@ private:
     void DrawInfo(){
         move(sizeY + 2,4);
         eCon.Color(2);
-        printw("Lifes: %d     ", Player.Lifes);
+        printw("Życia: %d     ", Player.Lifes);
         eCon.Color(1);
-        printw("Score: %d     ", Player.Score);
+        printw("Punkty: %d     ", Player.Score);
         eCon.Color(6);
-        printw("Level: %d   ", Level);
+        printw("Poziom: %d   ", Level);
         eCon.ColorEnd();
+    }
+    
+    void DrawLegend(){
+        int posY = 1, posX = sizeX + 4;
+        move(posY, posX);
+        eCon.Color(3);
+        printw("Legenda:");
+        
+        posY += 2;
+        move(posY, posX);
+        eCon.Color(8);
+        printw("%c", Wall); //ściana
+        eCon.ColorEnd();
+        printw(" - ściana");
+        
+        posY++;
+        move(posY, posX);
+        printw("%c", Dirt); //Empty
+        printw(" - ziemia");
+        
+        posY++;
+        move(posY, posX);
+        eCon.Color(6);
+        printw("%c", Player.Char); //Gracz
+        eCon.ColorEnd();
+        printw(" - gracz");
+        
+        posY++;
+        move(posY, posX);
+        eCon.Color(7);
+        eCon.BlinkText(true);
+        eCon.BoldText(true);
+        printw("%c", NextLev); //Next lev
+        eCon.ColorEnd();
+        eCon.BlinkText(false);
+        eCon.BoldText(false);
+        printw(" - Następny poziom");
+        
+        posY++;
+        move(posY, posX);
+        eCon.Color(3);
+        printw("%c", Box); //Box
+        eCon.ColorEnd();
+        printw(" - pudełko");
+        posY++;
+        move(posY, posX);
+        printw("(można przesuwać)");
+        posY++;
+        move(posY, posX);
+        printw("(posiadają grawitację)");
+        
+        posY++;
+        move(posY, posX);
+        printw("%c,%c",LaserPoz, LaserPion);
+        printw(" - lasery");
+        
+        posY++;
+        move(posY, posX);
+        eCon.Color(2);
+        printw("%c,%c",StrzalPoz, StrzalPion);
+        eCon.ColorEnd();
+        printw(" - strzały");
+        posY++;
+        move(posY, posX);
+        printw("(zabijają po");
+        posY++;
+        move(posY, posX);
+        printw("trafieniu gracza)");
+        
+        posY++;
+        move(posY, posX);
+        eCon.Color(5);
+        printw("%c", Enemy);
+        eCon.ColorEnd();
+        printw(" - wrogowie");
+        
+        posY++;
+        move(posY, posX);
+        eCon.Color(7);
+        printw("%c", Diament);
+        eCon.ColorEnd();
+        printw(" - diamenty");
+        posY++;
+        move(posY, posX);
+        printw("(+10 pkt)");
+        
     }
     
     void Gravity(){
