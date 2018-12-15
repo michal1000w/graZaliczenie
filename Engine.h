@@ -42,6 +42,7 @@ private:
     char EndPage();
     void LoadLevel();
     char MovePlayer();
+    void BoxMove(int);
     void FillEmpty();
     void DrawFullBoard();
     void UpdateBoard(int, int);

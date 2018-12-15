@@ -1,5 +1,41 @@
 #include "Engine.h"
 
+void Engine::BoxMove(int kierunek){ //1 - lewo; 2 - prawo
+    if (kierunek == 1){ //Lewo
+        for (int x = Player.X; x > 0; x--){
+            if (board[Player.Y][x] == Box && board[Player.Y][x-1] == Box) continue;
+            else if (board[Player.Y][x] == Box && board[Player.Y][x-1] != Empty) break;
+            else if (board[Player.Y][x] == Box && board[Player.Y][x-1] == Empty){
+                for (int j = x-1; j < Player.X; j++){
+                    board[Player.Y][j] = Box;
+                    UpdateBoard(Player.Y, j);
+                }
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                Player.X--;
+                DrawPlayer();
+                break;
+            }
+        }
+    } else if (kierunek == 2){ //Prawo
+        for (int x = Player.X; x < sizeX; x++){
+            if (board[Player.Y][x] == Box && board[Player.Y][x+1] == Box) continue;
+            else if (board[Player.Y][x] == Box && board[Player.Y][x+1] != Empty) break;
+            else if (board[Player.Y][x] == Box && board[Player.Y][x+1] == Empty){
+                for (int j = x+1; j > Player.X; j--){
+                    board[Player.Y][j] = Box;
+                    UpdateBoard(Player.Y, j);
+                }
+                board[Player.Y][Player.X] = Empty;
+                UpdateBoard(Player.Y, Player.X);
+                Player.X++;
+                DrawPlayer();
+                break;
+            }
+        }
+    }
+}
+
 char Engine::MovePlayer(){
     nodelay(stdscr, true); //non-block input from getch()
     char keyPressed = getch();
@@ -32,13 +68,8 @@ char Engine::MovePlayer(){
             DrawPlayer();
         }
     } else if (keyPressed == 5 && Player.X < sizeX-1 && board[Player.Y][Player.X+1] != Wall && board[Player.Y][Player.X+1] != LaserPoz && board[Player.Y][Player.X+1] != LaserPion){ //strzałka w prawo
-        if (board[Player.Y][Player.X+1] == Box && board[Player.Y][Player.X+2] == Empty){
-            board[Player.Y][Player.X+2] = Box;
-            UpdateBoard(Player.Y, Player.X+2);
-            board[Player.Y][Player.X] = Empty;
-            UpdateBoard(Player.Y,Player.X);
-            Player.X++;
-            DrawPlayer();
+        if (board[Player.Y][Player.X+1] == Box){
+            BoxMove(2);
         } else if (board[Player.Y][Player.X+1] != Box){
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
@@ -53,13 +84,8 @@ char Engine::MovePlayer(){
             DrawPlayer();
         }
     } else if (keyPressed == 4 && Player.X > 0 && board[Player.Y][Player.X-1] != Wall && board[Player.Y][Player.X-1] != LaserPoz && board[Player.Y][Player.X-1] != LaserPion){ //strzałka w lewo
-        if (board[Player.Y][Player.X-1] == Box && board[Player.Y][Player.X-2] == Empty){
-            board[Player.Y][Player.X-2] = Box;
-            UpdateBoard(Player.Y, Player.X-2);
-            board[Player.Y][Player.X] = Empty;
-            UpdateBoard(Player.Y, Player.X);
-            Player.X--;
-            DrawPlayer();
+        if (board[Player.Y][Player.X-1] == Box){
+            BoxMove(1);
         } else if (board[Player.Y][Player.X-1] != Box){
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);

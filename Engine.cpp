@@ -12,6 +12,7 @@ void Engine::Init(int Lev, int Lifes){
         //Player.Y = sizeY/2;
         Player.Lifes = Lifes;
         Player.Score = 0;
+        if (Lev == 1) LevScore = 0;
         Wall = 'H';
         Box = '0';
         Dirt = '#';
