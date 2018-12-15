@@ -78,10 +78,8 @@ char Menu::DrawEndMenu(int x, int Score){
 }
 
 void Menu::DrawConSize(int y, int x){
-    char keyPressed = ' ';
-    while (keyPressed != 'w'){
-        keyPressed = getch();
-        
+    int keyPressed = ' ';
+    do {
         move(0,0);
         for (int i = 0; i < x; i++) printw("=");
         printw("\n");
@@ -95,8 +93,10 @@ void Menu::DrawConSize(int y, int x){
         move(3,3);
         printw("Zwiększaj rozmiary konsoli aż cała tabela będzie widoczna");
         move(4,3);
-        printw("Aby zakończyć konfigurację naciśnij w");
+        printw("Aby zakończyć konfigurację naciśnij enter");
+        keyPressed = getch();
     }
+    while (keyPressed != 10);
 }
 
 void Menu::DrawRainbowLabel(int x, string text){
