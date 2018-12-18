@@ -13,7 +13,7 @@ void Engine::DrawFullBoard(){
     for (int y=0; y<sizeY; y++){
         printw("|");
         for (int x=0; x<sizeX; x++){
-            if (board[y][x] == NextLev){
+            if (board[y][x] == NextLev || board[y][x] == key.Char){
                 eCon.Color(7);
                 eCon.BlinkText(true);
                 eCon.BoldText(true);
@@ -21,7 +21,7 @@ void Engine::DrawFullBoard(){
                 eCon.ColorEnd();
                 eCon.BlinkText(false);
                 eCon.BoldText(false);
-            } else if (board[y][x] == Box){
+            } else if (board[y][x] == Box || board[y][x] == Drzwi){
                 eCon.Color(3);
                 printw("%c",board[y][x]);
                 eCon.ColorEnd();
@@ -59,7 +59,7 @@ void Engine::UpdateBoard(int y, int x){
         printw("%c",board[y][x]);
         eCon.ColorEnd();
         eCon.BoldText(false);
-    } else if (board[y][x] == NextLev){
+    } else if (board[y][x] == NextLev || board[y][x] == key.Char){
         eCon.Color(7);
         eCon.BlinkText(true);
         eCon.BoldText(true);
@@ -67,7 +67,7 @@ void Engine::UpdateBoard(int y, int x){
         eCon.ColorEnd();
         eCon.BlinkText(false);
         eCon.BoldText(false);
-    } else if (board[y][x] == Box){
+    } else if (board[y][x] == Box || board[y][x] == Drzwi){
         eCon.Color(3);
         printw("%c",board[y][x]);
         eCon.ColorEnd();

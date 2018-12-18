@@ -27,7 +27,11 @@ private:
     };
     player Player;
     player PoczPlayer;
-    char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion, Diament;
+    struct Key{
+        int Char;
+        int count;
+    } key, keyPocz;
+    char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion, Diament, Drzwi;
     char NextLev;
     int Level, LevScore, LevLifes;
     int gravityDelay, shotDelay, sDelay, enemyDelay;
@@ -35,7 +39,7 @@ private:
     char Enemy;
     
 public:
-    void Init(int Lev = 1, int Lifes = 3);
+    void Init(int Lev = 1, int Lifes = 3, int KeyCount = 0);
     void MainLoop();
     
 private:

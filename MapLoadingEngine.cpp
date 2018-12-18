@@ -19,6 +19,7 @@ void Engine::ReadMapFromFile(const string filename){
                     PoczPlayer.X = i;
                 }
             }
+            
             y++;
         }
         file.close();

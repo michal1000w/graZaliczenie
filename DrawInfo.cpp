@@ -49,6 +49,17 @@ void Engine::DrawLegend(){
     
     posY++;
     move(posY, posX);
+    eCon.Color(7);
+    eCon.BlinkText(true);
+    eCon.BoldText(true);
+    printw("%c", key.Char); //Next lev
+    eCon.ColorEnd();
+    eCon.BlinkText(false);
+    eCon.BoldText(false);
+    printw(" - Klucz");
+    
+    posY++;
+    move(posY, posX);
     eCon.Color(3);
     printw("%c", Box); //Box
     eCon.ColorEnd();
@@ -59,6 +70,13 @@ void Engine::DrawLegend(){
     posY++;
     move(posY, posX);
     printw("(posiadaja grawitacje)");
+    
+    posY++;
+    move(posY, posX);
+    eCon.Color(3);
+    printw("%c", Drzwi); //Drzwi
+    eCon.ColorEnd();
+    printw(" - Drzwi");
     
     posY++;
     move(posY, posX);
@@ -94,5 +112,17 @@ void Engine::DrawLegend(){
     posY++;
     move(posY, posX);
     printw("(+10 pkt)");
+    
+    
+    posY += 2;
+    move(posY, posX);
+    printw("Ekwipunek: ");
+    posY++;
+    move(posY, posX);
+    eCon.Color(3);
+    if (key.count > 0){
+        printw(" - Klucze: %d", key.count);
+    } else
+        printw("                   ");
     
 }

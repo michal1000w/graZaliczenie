@@ -44,18 +44,19 @@ void Menu::DrawMenu(int x, int pos){
 }
     
 void Menu::DrawMenuSterowanie(int x){
-        eCon.ClearScr();
-        DrawLabel(x, "Sterowanie");
-        DrawMenuItem(x, " ", false);
-        DrawMenuItem(x,"Uzyj strzalek do poruszania sie po planszy;", false);
-        DrawMenuItem(x, "Aby wyjsc z gry nacisnij 'q'", false);
-        DrawMenuItem(x, "Aby zrestartowac poziom nacisnij 'r'", false);
+    eCon.ClearScr();
+    DrawLabel(x, "Sterowanie");
+    DrawMenuItem(x, " ", false);
+    DrawMenuItem(x,"Uzyj strzalek do poruszania sie po planszy;", false);
+    DrawMenuItem(x, "Aby wyjsc z gry nacisnij 'q'", false);
+    DrawMenuItem(x, "Aby zrestartowac poziom nacisnij 'r'", false);
+    DrawMenuItem(x, "Aby otworzyc drzwi nacisnij p", false);
         
-        DrawMenuItem(x, " ", false);
-        DrawMenuItem(x, "Nacisnij dowolny klawisz by wrocic do menu;", false);
-        DrawMenuItem(x, " ", false);
-        DrawLine(x);
-        getch();
+    DrawMenuItem(x, " ", false);
+    DrawMenuItem(x, "Nacisnij dowolny klawisz by wrocic do menu;", false);
+    DrawMenuItem(x, " ", false);
+    DrawLine(x);
+    getch();
 }
 
 char Menu::DrawEndMenu(int x, int Score){

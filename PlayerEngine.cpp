@@ -41,7 +41,10 @@ char Engine::MovePlayer(){
     char keyPressed = getch();
     nodelay(stdscr, false);
     
-    if (keyPressed == 3 && Player.Y > 0 && board[Player.Y-1][Player.X] != Wall && board[Player.Y-1][Player.X] != LaserPoz && board[Player.Y-1][Player.X] != LaserPion){ //strzałka w górę
+    
+    /////////RUCH GRACZA////////////
+    
+    if (keyPressed == 3 && Player.Y > 0 && board[Player.Y-1][Player.X] != Wall && board[Player.Y-1][Player.X] != LaserPoz && board[Player.Y-1][Player.X] != LaserPion && board[Player.Y-1][Player.X] != Drzwi){ //strzałka w górę
         if (board[Player.Y-1][Player.X] != Box){
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
@@ -50,11 +53,15 @@ char Engine::MovePlayer(){
                 return (char)230;
             else if (board[Player.Y-1][Player.X] == Diament)
                 Player.Score += 10;
+            else if (board[Player.Y-1][Player.X] == key.Char){
+                key.count++;
+                DrawLegend();
+            }
             
             Player.Y--;
             DrawPlayer();
         }
-    } else if (keyPressed == 2 && Player.Y < sizeY-1 && board[Player.Y+1][Player.X] != Wall && board[Player.Y+1][Player.X] != LaserPoz && board[Player.Y+1][Player.X] != LaserPion){ //strzałka w dół
+    } else if (keyPressed == 2 && Player.Y < sizeY-1 && board[Player.Y+1][Player.X] != Wall && board[Player.Y+1][Player.X] != LaserPoz && board[Player.Y+1][Player.X] != LaserPion && board[Player.Y+1][Player.X] != Drzwi){ //strzałka w dół
         if (board[Player.Y+1][Player.X] != Box){
             board[Player.Y][Player.X] = Empty;
             UpdateBoard(Player.Y, Player.X);
@@ -63,11 +70,15 @@ char Engine::MovePlayer(){
                 return (char)230;
             else if (board[Player.Y+1][Player.X] == Diament)
                 Player.Score += 10;
+            else if (board[Player.Y+1][Player.X] == key.Char){
+                key.count++;
+                DrawLegend();
+            }
             
             Player.Y++;
             DrawPlayer();
         }
-    } else if (keyPressed == 5 && Player.X < sizeX-1 && board[Player.Y][Player.X+1] != Wall && board[Player.Y][Player.X+1] != LaserPoz && board[Player.Y][Player.X+1] != LaserPion){ //strzałka w prawo
+    } else if (keyPressed == 5 && Player.X < sizeX-1 && board[Player.Y][Player.X+1] != Wall && board[Player.Y][Player.X+1] != LaserPoz && board[Player.Y][Player.X+1] != LaserPion && board[Player.Y][Player.X+1] != Drzwi){ //strzałka w prawo
         if (board[Player.Y][Player.X+1] == Box){
             BoxMove(2);
         } else if (board[Player.Y][Player.X+1] != Box){
@@ -76,14 +87,17 @@ char Engine::MovePlayer(){
             
             if (board[Player.Y][Player.X+1] == NextLev)
                 return (char)230;
-            
-            if (board[Player.Y][Player.X+1] == Diament)
+            else if (board[Player.Y][Player.X+1] == Diament)
                 Player.Score += 10;
+            else if (board[Player.Y][Player.X+1] == key.Char){
+                key.count++;
+                DrawLegend();
+            }
             
             Player.X++;
             DrawPlayer();
         }
-    } else if (keyPressed == 4 && Player.X > 0 && board[Player.Y][Player.X-1] != Wall && board[Player.Y][Player.X-1] != LaserPoz && board[Player.Y][Player.X-1] != LaserPion){ //strzałka w lewo
+    } else if (keyPressed == 4 && Player.X > 0 && board[Player.Y][Player.X-1] != Wall && board[Player.Y][Player.X-1] != LaserPoz && board[Player.Y][Player.X-1] != LaserPion &&board[Player.Y][Player.X-1] != Drzwi){ //strzałka w lewo
         if (board[Player.Y][Player.X-1] == Box){
             BoxMove(1);
         } else if (board[Player.Y][Player.X-1] != Box){
@@ -92,14 +106,33 @@ char Engine::MovePlayer(){
             
             if (board[Player.Y][Player.X-1] == NextLev)
                 return (char)230;
-            
-            if (board[Player.Y][Player.X-1] == Diament)
+            else if (board[Player.Y][Player.X-1] == Diament)
                 Player.Score += 10;
+            else if (board[Player.Y][Player.X-1] == key.Char){
+                key.count++;
+                DrawLegend();
+            }
             
             Player.X--;
             DrawPlayer();
         }
     }
+    
+    //////////////OTWIERANIE DRZWI///////////////
+    if (keyPressed == 'p' && key.count > 0){
+        if (board[Player.Y-1][Player.X] == Drzwi){
+            key.count--;
+            board[Player.Y-1][Player.X] = Empty;
+            UpdateBoard(Player.Y-1, Player.X);
+            DrawLegend();
+        } else if (board[Player.Y+1][Player.X] == Drzwi){
+            key.count--;
+            board[Player.Y+1][Player.X] = Empty;
+            UpdateBoard(Player.Y+1, Player.X);
+            DrawLegend();
+        }
+    }
+    
     return keyPressed;
 }
 
