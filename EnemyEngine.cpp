@@ -1,5 +1,29 @@
 #include "Engine.h"
 
+void Engine::EnemyMove2(int Delay){
+    vector <int> przesunieci;
+    bool czyBreak = false;
+    if (enemyDelay > Delay){
+        for (int y=0; y<sizeY; y++)
+            for (int x = 0; x<sizeX; x++){
+                //Sprawdzanie, czy dany wróg nie został już poruszony
+                if (przesunieci.size() >= 2)
+                    for (int i=0; i < przesunieci.size()/2; i++)
+                        if (y == przesunieci[i*2] && x == przesunieci[i*2 + 1]){ //żeby nie przesuwał po raz drugi tego samego
+                            czyBreak = true;
+                            break;
+                        }
+                if (czyBreak == true){
+                    continue;  //poprzednio był break, sprawdzić jak będzie działać
+                }
+                
+                //AI
+            }
+        
+    } else if (enemyDelay < Delay+3)
+        enemyDelay++;
+}
+
 void Engine::EnemyMove(){ // zrobić lepsze AI, niekoniecznie losowe
     vector <int> przesunieci;
     bool czyBreak = false;

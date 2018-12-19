@@ -81,6 +81,7 @@ char Menu::DrawEndMenu(int x, int Score){
 void Menu::DrawConSize(int y, int x){
     int keyPressed = ' ';
     do {
+        clear();
         move(0,0);
         for (int i = 0; i < x; i++) printw("=");
         printw("\n");

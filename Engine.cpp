@@ -8,8 +8,6 @@ void Engine::Init(int Lev, int Lifes, int KeyCount){
     Player.Char = '&';
     LoadLevel();
         
-        //Player.X = sizeX/2;
-        //Player.Y = sizeY/2;
     Player.Lifes = Lifes;
     Player.Score = 0;
     if (Lev == 1) LevScore = 0;
@@ -30,6 +28,8 @@ void Engine::Init(int Lev, int Lifes, int KeyCount){
     shotDelay = sDelay = gravityDelay = enemyDelay = 0;
     LevLifes = Player.Lifes;
     shot = false;
+    
+    LastLevel = 3;
 }
     
 void Engine::MainLoop(){
@@ -48,14 +48,23 @@ void Engine::MainLoop(){
             break;
         } else if (keyPressed == (char)230){ //next level
             Level++;
-            Player.Score += 20;
-            LevScore = Player.Score;
-            LevLifes = Player.Lifes;
-            LoadLevel();
-            eCon.ClearScr();
-            keyPocz.count = key.count;
-            MainLoop();
-            break;
+            if (!(Level >= LastLevel)){
+                Player.Score += 20;
+                LevScore = Player.Score;
+                LevLifes = Player.Lifes;
+                LoadLevel();
+                eCon.ClearScr();
+                keyPocz.count = key.count;
+                MainLoop();
+                break;
+            } else {
+                char keyPressed = EndPage();
+                if (keyPressed == 'r'){
+                    Init();
+                    MainLoop();
+                }
+                break;
+            }
         }
         Gravity();
             

@@ -37,6 +37,7 @@ private:
     int gravityDelay, shotDelay, sDelay, enemyDelay;
     bool shot;
     char Enemy;
+    int LastLevel;
     
 public:
     void Init(int Lev = 1, int Lifes = 3, int KeyCount = 0);
@@ -56,6 +57,7 @@ private:
     void Gravity();
     char Strzaly();
     void EnemyMove();
+    void EnemyMove2(int Delay = 7);
     void ReadMapFromFile(const string filename);
 };
 
