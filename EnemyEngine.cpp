@@ -5,7 +5,10 @@ bool Engine::reachedEnd(int y, int x){
 }
 
 bool Engine::deadEnd(int y, int x){
-  return (board[y][x] != Empty && board[y][x] != Enemy) || board[y][x] == '.';
+  if (y == start.y && x == start.x)
+    return (board[y][x] != Empty && board[y][x] != Enemy) || board[y][x] == '.';
+  else
+    return board[y][x] != Empty || board[y][x] == '.';
 }
 
 void Engine::ClearDots(){
