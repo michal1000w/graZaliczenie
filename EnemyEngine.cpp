@@ -10,8 +10,9 @@ bool Engine::deadEnd(int y, int x){
 
 void Engine::ClearDots(){
   for (int y = 0; y < sizeY; y++)
-    for (int x = 0; x < sizeX; x++)
+    for (int x = 0; x < sizeX; x++){
       if (board[y][x] == '.') board[y][x] = Empty;
+    }
 }
 
 bool Engine::SolveM(int y, int x){
@@ -100,8 +101,10 @@ void Engine::EnemyMove2(int Delay){
                     przesunieci.push_back(y);
                     przesunieci.push_back(x);
                   }
+                } else {
+                  board[y][x] = Enemy;
+                  UpdateBoard(y,x);
                 }
-
                 ClearDots();
                 enemyDelay = 0;
             }
