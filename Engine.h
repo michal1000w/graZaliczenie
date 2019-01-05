@@ -38,11 +38,17 @@ private:
     bool shot;
     char Enemy;
     int LastLevel;
-    
+
+    //AI
+    struct Start{
+      int x;
+      int y;
+    } start;
+
 public:
     void Init(int Lev = 1, int Lifes = 3, int KeyCount = 0);
     void MainLoop();
-    
+
 private:
     char EndPage();
     void LoadLevel();
@@ -57,7 +63,13 @@ private:
     void Gravity();
     char Strzaly();
     void EnemyMove();
+
     void EnemyMove2(int Delay = 7);
+    bool reachedEnd(int,int);
+    bool deadEnd(int,int);
+    bool SolveM(int,int);
+    void ClearDots();
+
     void ReadMapFromFile(const string filename);
 };
 

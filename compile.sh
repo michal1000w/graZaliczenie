@@ -1,0 +1,1 @@
+g++ main.cpp DrawBoardEngine.cpp EasyConsole.h Engine.h MapLoadingEngine.cpp menu.h DrawInfo.cpp EnemyEngine.cpp PlayerEngine.cpp EasyConsole.cpp Engine.cpp menu.cpp StrzalyEngine.cpp -lncurses -o grazaliczenie

@@ -12,7 +12,7 @@ int main(){
     EasyConsole eCon;
     eCon.ConsoleInit();
     eCon.ColorInit();
-    
+
     Menu menu;
     printw("Przed rozpoczeciem skonfiguruj okienko konsoli\n");
     printw("Aby przejsc do konfiguracji nacisnij dowolny klawisz");
@@ -20,8 +20,8 @@ int main(){
     menu.DrawConSize(sizeY+4, sizeX+28);
     menu.DrawMenu(sizeX+28, 0);
     Engine engine;
-    engine.Init();
+    engine.Init(-1);
     engine.MainLoop();
-    
+
     endwin();
 }

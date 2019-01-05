@@ -3,7 +3,7 @@
 void Engine::ReadMapFromFile(const string filename){
     string line;
     int y = 0;
-    
+
     ifstream file;
     file.open(filename);
     if (file.is_open())
@@ -19,7 +19,7 @@ void Engine::ReadMapFromFile(const string filename){
                     PoczPlayer.X = i;
                 }
             }
-            
+
             y++;
         }
         file.close();
@@ -32,4 +32,6 @@ void Engine::LoadLevel(){
         ReadMapFromFile("mapy/map1.txt");
     else if (Level == 2)
         ReadMapFromFile("mapy/map2.txt");
+    else if (Level == -1)
+      ReadMapFromFile("mapy/test1.txt");
 }

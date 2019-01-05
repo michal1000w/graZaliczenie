@@ -4,10 +4,10 @@ void Engine::Init(int Lev, int Lifes, int KeyCount){
     eCon.ClearScr();
     Empty = ' ';
     Level = Lev;
-        
+
     Player.Char = '&';
     LoadLevel();
-        
+
     Player.Lifes = Lifes;
     Player.Score = 0;
     if (Lev == 1) LevScore = 0;
@@ -28,15 +28,15 @@ void Engine::Init(int Lev, int Lifes, int KeyCount){
     shotDelay = sDelay = gravityDelay = enemyDelay = 0;
     LevLifes = Player.Lifes;
     shot = false;
-    
+
     LastLevel = 3;
 }
-    
+
 void Engine::MainLoop(){
     DrawFullBoard();
     DrawPlayer();
     DrawLegend();
-        
+
     while(true){
         char keyPressed = MovePlayer();
         if (keyPressed == 'q' || keyPressed == 'Q') //zatrzymanie pętli
@@ -67,7 +67,7 @@ void Engine::MainLoop(){
             }
         }
         Gravity();
-            
+
         if (Strzaly() == (char)230){ //uderzenie w strzały
             Player.Lifes--;
             //LevScore = Player.Score;
@@ -79,7 +79,7 @@ void Engine::MainLoop(){
             MainLoop();
             break;
         }
-            
+
         if (Player.Lifes <= 0){ //koniec gry
             char keyPressed = EndPage();
             if (keyPressed == 'r'){
@@ -88,9 +88,10 @@ void Engine::MainLoop(){
             }
             break;
         }
-            
-        EnemyMove();
-        
+
+        //EnemyMove();
+        EnemyMove2(10);
+
         DrawInfo();
         eCon.Sleep(50);
     }
@@ -100,7 +101,7 @@ char Engine::EndPage(){
     Menu menu;
     return menu.DrawEndMenu(sizeX, Player.Score);
 }
-    
+
 void Engine::Gravity(){
     if (gravityDelay > 1){
         for (int y=sizeY-2; y>=0; y--)
