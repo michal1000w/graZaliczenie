@@ -91,8 +91,8 @@ private:
     void EnemyMove3(int Delay = 7);
     bool InitNodes();
     void SetupNodes();
-    bool Solve_AStar();
-    bool DrawShortestPath(bool);
+    bool Solve_AStar(sNode*);
+    bool DrawShortestPath(bool,sNode*);
     void ReloadNodes();
 
     void ReadMapFromFile(const string filename);

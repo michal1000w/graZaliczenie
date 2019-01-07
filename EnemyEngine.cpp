@@ -3,9 +3,9 @@
 ///////////////////////AI v3
 
 bool Engine::InitNodes(){
-	nodes = new sNode[sizeY * sizeX];
-	for (int y = 0; y < sizeY; y++)
-		for (int x = 0; x < sizeX; x++){
+	nodes = new sNode[(sizeY+1) * (sizeX+1)];
+	for (int y = 0; y <= sizeY; y++)
+		for (int x = 0; x <= sizeX; x++){
 			nodes[y * sizeX + x].x = x;
 			nodes[y * sizeX + x].y = y;
 			nodes[y * sizeX + x].Obstacle = false;
@@ -13,41 +13,24 @@ bool Engine::InitNodes(){
 			nodes[y * sizeX + x].Visited = false;
 		}
 	//Create connections
-	for (int y = 0; y < sizeY; y++)
-		for (int x = 0; x < sizeX; x++){
+	for (int y = 0; y <= sizeY; y++)
+		for (int x = 0; x <= sizeX; x++){
 			if (y>0)
 				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y-1)*sizeX+(x+0)]);
-			if (y<sizeY-1)
+			if (y<sizeY-1) //ssizey-1
 				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+1)*sizeX+(x+0)]);
 			if (x>0)
 				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+0)*sizeX+(x-1)]);
-			if(x<sizeX-1)
+			if(x<sizeX-1) //sizex-1
 				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+0)*sizeX+(x+1)]);
 		}
 	return true;
 }
 
 void Engine::ReloadNodes(){
-  for (int y = 0; y < sizeY; y++)
-		for (int x = 0; x < sizeX; x++){
-			nodes[y * sizeX + x].x = x;
-			nodes[y * sizeX + x].y = y;
+  for (int y = 0; y <= sizeY; y++)
+		for (int x = 0; x <= sizeX; x++){
 			nodes[y * sizeX + x].Obstacle = false;
-			nodes[y * sizeX + x].parent = nullptr;
-			nodes[y * sizeX + x].Visited = false;
-      nodes[y * sizeX + x].Neighbours.clear();
-		}
-	//Create connections
-	for (int y = 0; y < sizeY; y++)
-		for (int x = 0; x < sizeX; x++){
-			if (y>0)
-				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y-1)*sizeX+(x+0)]);
-			if (y<sizeY-1)
-				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+1)*sizeX+(x+0)]);
-			if (x>0)
-				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+0)*sizeX+(x-1)]);
-			if(x<sizeX-1)
-				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+0)*sizeX+(x+1)]);
 		}
 }
 
@@ -55,13 +38,12 @@ void Engine::SetupNodes(){
 	for (int y = 0; y < sizeY; y++)
 		for (int x = 0; x < sizeX; x++){
 			if (board[y][x] == Wall || board[y][x] == Box || board[y][x] == Dirt || board[y][x] == Diament || board[y][x] == Drzwi || board[y][x] == LaserPoz || board[y][x] == LaserPion || board[y][x] == key.Char || board[y][x] == NextLev) nodes[y * sizeX + x].Obstacle = true;
-			//else if (board[y][x] == Enemy) nodeStart = &nodes[y * sizeX + x];
-			else if (board[y][x] == Player.Char) nodeEnd = &nodes[y * sizeX + x];
+			//else if (board[y][x] == Player.Char) nodeEnd = &nodes[y * sizeX + x];
       else nodes[y * sizeX + x].Obstacle = false;
 		}
 }
 
-bool Engine::Solve_AStar(){
+bool Engine::Solve_AStar(sNode *End){
 	for (int y = 0; y < sizeY; y++)
 		for (int x = 0; x < sizeX; x++){
 			nodes[y*sizeX+x].Visited = false;
@@ -78,12 +60,12 @@ bool Engine::Solve_AStar(){
 
 	sNode *Current = nodeStart;
 	nodeStart->LocalGoal = 0.0f;
-	nodeStart->GlobalGoal = heuristic(nodeStart, nodeEnd);
+	nodeStart->GlobalGoal = heuristic(nodeStart, End);
 
 	list<sNode*> NotTestedNodes;
 	NotTestedNodes.push_back(nodeStart);
 
-	while (!NotTestedNodes.empty() && Current != nodeEnd){
+	while (!NotTestedNodes.empty() && Current != End){
 		NotTestedNodes.sort([](const sNode* lhs, const sNode* rhs){ return lhs->GlobalGoal < rhs->GlobalGoal; } );
 
 		while(!NotTestedNodes.empty() && NotTestedNodes.front()->Visited)
@@ -104,18 +86,18 @@ bool Engine::Solve_AStar(){
 				Neighbour->parent = Current;
 				Neighbour->LocalGoal = PossiblyLowerGoal;
 
-				Neighbour->GlobalGoal = Neighbour->LocalGoal + heuristic(Neighbour, nodeEnd);
+				Neighbour->GlobalGoal = Neighbour->LocalGoal + heuristic(Neighbour, End);
 			}
 		}
 	}
 	return true;
 }
 
-bool Engine::DrawShortestPath(bool visible){
+bool Engine::DrawShortestPath(bool visible, sNode *End){
   bool PathExists = false;
-	if (nodeEnd != nullptr) {
+	if (End != nullptr) {
     PathExists = true;
-		sNode *p = nodeEnd;
+		sNode *p = End;
 		while (p->parent != nullptr) {
       if (board[p->y][p->x] != Player.Char && board[p->y][p->x] != Enemy){
 			   board[p->y][p->x] = '.';
@@ -153,8 +135,20 @@ void Engine::EnemyMove3(int Delay){
                 SetupNodes();
                 ClearDots(true);
                 nodeStart = &nodes[y * sizeX + x];
-                Solve_AStar();
-                if (DrawShortestPath(true)){
+
+
+                int XX = Player.X;
+                int YY = Player.Y;
+                int pos = YY * sizeX + XX;
+
+                delete nodeEnd;
+                sNode *nodeEnd = nullptr;
+                nodeEnd = &nodes[pos];   //tutaj jest problem
+              //nodeEnd = &nodes[7 * sizeX + 2]; //tutaj problemu już nie ma
+                //wniosek : WTF???
+
+                Solve_AStar(nodeEnd);
+                if (DrawShortestPath(true,nodeEnd)){
                   if (board[y+1][x] == '.'){
                     board[y+1][x] = Enemy;
                     board[y][x] = Empty;
