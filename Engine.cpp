@@ -90,7 +90,8 @@ void Engine::MainLoop(){
         }
 
         //EnemyMove();
-        EnemyMove2(10);
+        //EnemyMove2(10);
+        EnemyMove3(10);
 
         DrawInfo();
         eCon.Sleep(50);

@@ -5,6 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
+#include <list>
+#include <cmath>
+#include <string>
 
 #include "EasyConsole.h"
 #include "menu.h"
@@ -43,7 +47,22 @@ private:
     struct Start{
       int x;
       int y;
+      int num;
     } start;
+
+    struct sNode{
+	    bool Obstacle = false;
+	    bool Visited = false;
+	    float GlobalGoal;
+      float LocalGoal;
+	    int x;
+	    int y;
+	    vector<sNode*> Neighbours;
+	    sNode* parent;
+    };
+    sNode* nodes = nullptr;
+    sNode *nodeStart = nullptr;
+    sNode *nodeEnd = nullptr;
 
 public:
     void Init(int Lev = 1, int Lifes = 3, int KeyCount = 0);
@@ -65,10 +84,15 @@ private:
     void EnemyMove();
 
     void EnemyMove2(int Delay = 7);
-    bool reachedEnd(int,int);
     bool deadEnd(int,int);
     bool SolveM(int,int);
     void ClearDots();
+
+    void EnemyMove3(int Delay = 7);
+    bool InitNodes();
+    void SetupNodes();
+    bool Solve_AStar();
+    bool DrawShortestPath(bool);
 
     void ReadMapFromFile(const string filename);
 };
