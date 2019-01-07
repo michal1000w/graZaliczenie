@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 ///////////////////////AI v3
+
 bool Engine::InitNodes(){
 	nodes = new sNode[sizeY * sizeX];
 	for (int y = 0; y < sizeY; y++)
@@ -26,12 +27,37 @@ bool Engine::InitNodes(){
 	return true;
 }
 
+void Engine::ReloadNodes(){
+  for (int y = 0; y < sizeY; y++)
+		for (int x = 0; x < sizeX; x++){
+			nodes[y * sizeX + x].x = x;
+			nodes[y * sizeX + x].y = y;
+			nodes[y * sizeX + x].Obstacle = false;
+			nodes[y * sizeX + x].parent = nullptr;
+			nodes[y * sizeX + x].Visited = false;
+      nodes[y * sizeX + x].Neighbours.clear();
+		}
+	//Create connections
+	for (int y = 0; y < sizeY; y++)
+		for (int x = 0; x < sizeX; x++){
+			if (y>0)
+				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y-1)*sizeX+(x+0)]);
+			if (y<sizeY-1)
+				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+1)*sizeX+(x+0)]);
+			if (x>0)
+				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+0)*sizeX+(x-1)]);
+			if(x<sizeX-1)
+				nodes[y * sizeX + x].Neighbours.push_back(&nodes[(y+0)*sizeX+(x+1)]);
+		}
+}
+
 void Engine::SetupNodes(){
 	for (int y = 0; y < sizeY; y++)
 		for (int x = 0; x < sizeX; x++){
-			if (board[y][x] == Wall || board[y][x] == Box || board[y][x] == Dirt || board[y][x] == Diament || board[y][x] == Drzwi) nodes[y * sizeX + x].Obstacle = true;
+			if (board[y][x] == Wall || board[y][x] == Box || board[y][x] == Dirt || board[y][x] == Diament || board[y][x] == Drzwi || board[y][x] == LaserPoz || board[y][x] == LaserPion || board[y][x] == key.Char || board[y][x] == NextLev) nodes[y * sizeX + x].Obstacle = true;
 			//else if (board[y][x] == Enemy) nodeStart = &nodes[y * sizeX + x];
 			else if (board[y][x] == Player.Char) nodeEnd = &nodes[y * sizeX + x];
+      else nodes[y * sizeX + x].Obstacle = false;
 		}
 }
 
@@ -122,7 +148,8 @@ void Engine::EnemyMove3(int Delay){
                 }
 
                 //AI
-                InitNodes();
+                //InitNodes();
+                ReloadNodes();
                 SetupNodes();
                 nodeStart = &nodes[y * sizeX + x];
                 Solve_AStar();
@@ -187,6 +214,7 @@ void Engine::ClearDots(){
   for (int y = 0; y < sizeY; y++)
     for (int x = 0; x < sizeX; x++){
       if (board[y][x] == '.') board[y][x] = Empty;
+      //UpdateBoard(y,x);
     }
 }
 

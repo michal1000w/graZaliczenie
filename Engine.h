@@ -93,6 +93,7 @@ private:
     void SetupNodes();
     bool Solve_AStar();
     bool DrawShortestPath(bool);
+    void ReloadNodes();
 
     void ReadMapFromFile(const string filename);
 };

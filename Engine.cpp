@@ -37,6 +37,8 @@ void Engine::MainLoop(){
     DrawPlayer();
     DrawLegend();
 
+    InitNodes();
+
     while(true){
         char keyPressed = MovePlayer();
         if (keyPressed == 'q' || keyPressed == 'Q') //zatrzymanie pętli
