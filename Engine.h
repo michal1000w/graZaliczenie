@@ -86,7 +86,7 @@ private:
     void EnemyMove2(int Delay = 7);
     bool deadEnd(int,int);
     bool SolveM(int,int);
-    void ClearDots();
+    void ClearDots(bool visible = false);
 
     void EnemyMove3(int Delay = 7);
     bool InitNodes();

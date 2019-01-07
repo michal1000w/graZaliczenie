@@ -20,7 +20,7 @@ void Menu::DrawMenu(int x, int pos){
                 DrawMenuItem(x, "Sterowanie", false);
             DrawMenuItem(x, " ", false);
             DrawLine(x);
-        
+
             //Poruszanie się po menu
             char keyPressed = getch();
             //3 - strzałka w górę
@@ -42,7 +42,7 @@ void Menu::DrawMenu(int x, int pos){
             }
         }
 }
-    
+
 void Menu::DrawMenuSterowanie(int x){
     eCon.ClearScr();
     DrawLabel(x, "Sterowanie");
@@ -51,7 +51,7 @@ void Menu::DrawMenuSterowanie(int x){
     DrawMenuItem(x, "Aby wyjsc z gry nacisnij 'q'", false);
     DrawMenuItem(x, "Aby zrestartowac poziom nacisnij 'r'", false);
     DrawMenuItem(x, "Aby otworzyc drzwi nacisnij p", false);
-        
+
     DrawMenuItem(x, " ", false);
     DrawMenuItem(x, "Nacisnij dowolny klawisz by wrocic do menu;", false);
     DrawMenuItem(x, " ", false);
@@ -70,11 +70,11 @@ char Menu::DrawEndMenu(int x, int Score){
     DrawMenuItem(x, "Aby zaczac nowa gre nacisnij r", false);
     DrawMenuItem(x, " ", false);
     DrawLine(x);
-    
+
     char keyPressed = ' ';
     while (keyPressed != 'q' && keyPressed != 'r')
         keyPressed = getch();
-    
+
     return keyPressed;
 }
 
@@ -91,7 +91,7 @@ void Menu::DrawConSize(int y, int x){
             move (i-1,x);
             printw("|");
         }
-        
+
         move(3,3);
         printw("Zwiekszaj rozmiary konsoli az cala tabela bedzie widoczna");
         move(4,3);
@@ -109,7 +109,7 @@ void Menu::DrawRainbowLabel(int x, string text){
     if ((boki*2)+text.length() == x){
         boki--;
         for (int i = 0; i<boki; i++) printw(" ");
-        
+
         int j=1;
         for (int i=0; i<text.length(); i++){
             eCon.Color(j);
@@ -119,12 +119,12 @@ void Menu::DrawRainbowLabel(int x, string text){
             else j = 1;
         }
         eCon.ColorEnd();
-        
+
         for (int i = 0; i<boki; i++) printw(" ");
     } else {
         boki--;
         for (int i = 0; i<boki; i++) printw(" ");
-        
+
         int j=1;
         for (int i=0; i<text.length(); i++){
             eCon.Color(j);
@@ -134,7 +134,7 @@ void Menu::DrawRainbowLabel(int x, string text){
             else j = 1;
         }
         eCon.ColorEnd();
-        
+
         for (int i = 0; i<=boki; i++) printw(" ");
     }
     eCon.ColorEnd();
@@ -144,6 +144,7 @@ void Menu::DrawRainbowLabel(int x, string text){
 }
 
 void Menu::DrawLabel(int x, string text){
+        eCon.ColorEnd();
         for (int i=0; i<x; i++) printw("="); //rysowanie górnej linii
         int boki = int(x - text.length())/2;
         printw("\n|");
@@ -164,15 +165,15 @@ void Menu::DrawLabel(int x, string text){
         for (int i=0; i<x; i++) printw("=");
         printw("\n");
 }
-    
+
 void Menu::DrawMenuItem(int x, string text, bool selected){
         int boki = int(x - text.length())/2;
         printw("|");
-        
+
         if (selected){
             eCon.BoldText(true);
             eCon.Color(2);
-            
+
             if (boki*2 + text.length() == x){
                 boki-=3;
                 for (int i=0; i<boki; i++) printw(" ");
@@ -209,7 +210,7 @@ void Menu::DrawMenuItem(int x, string text, bool selected){
         }
         printw("|\n");
 }
-    
+
 void Menu::DrawLine(int x){
         for (int i=0; i<x; i++) printw("=");
         printw("\n");

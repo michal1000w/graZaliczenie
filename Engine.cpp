@@ -102,7 +102,7 @@ void Engine::MainLoop(){
 
 char Engine::EndPage(){
     Menu menu;
-    return menu.DrawEndMenu(sizeX, Player.Score);
+    return menu.DrawEndMenu(sizeX+28, Player.Score);
 }
 
 void Engine::Gravity(){

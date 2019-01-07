@@ -151,6 +151,7 @@ void Engine::EnemyMove3(int Delay){
                 //InitNodes();
                 ReloadNodes();
                 SetupNodes();
+                ClearDots(true);
                 nodeStart = &nodes[y * sizeX + x];
                 Solve_AStar();
                 if (DrawShortestPath(true)){
@@ -192,7 +193,8 @@ void Engine::EnemyMove3(int Delay){
                   board[y][x] = Enemy;
                   UpdateBoard(y,x);
                 }
-                ClearDots();
+                //ClearDots();
+                //InitPath();
                 enemyDelay = 0;
             }
           }
@@ -210,11 +212,13 @@ bool Engine::deadEnd(int y, int x){
     return board[y][x] != Empty || board[y][x] == '.';
 }
 
-void Engine::ClearDots(){
+void Engine::ClearDots(bool visible){
   for (int y = 0; y < sizeY; y++)
     for (int x = 0; x < sizeX; x++){
-      if (board[y][x] == '.') board[y][x] = Empty;
-      //UpdateBoard(y,x);
+      if (board[y][x] == '.') {
+        board[y][x] = Empty;
+        if (visible) UpdateBoard(y,x);
+      }
     }
 }
 
