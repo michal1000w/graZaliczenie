@@ -36,7 +36,7 @@ private:
         int count;
     } key, keyPocz;
     char Empty, Wall, Box, Dirt, LaserPoz, LaserPion, StrzalPoz, StrzalPion, Diament, Drzwi;
-    char NextLev;
+    char NextLev, Path;
     int Level, LevScore, LevLifes;
     int gravityDelay, shotDelay, sDelay, enemyDelay;
     bool shot;
@@ -88,7 +88,7 @@ private:
     bool SolveM(int,int);
     void ClearDots(bool visible = false);
 
-    void EnemyMove3(int Delay = 7);
+    int EnemyMove3(int Delay = 7);
     bool InitNodes();
     void SetupNodes();
     bool Solve_AStar(sNode*);

@@ -20,7 +20,8 @@ int main(){
     menu.DrawConSize(sizeY+4, sizeX+28);
     menu.DrawMenu(sizeX+28, 0);
     Engine engine;
-    engine.Init(-1);
+    //engine.Init(-1);
+    engine.Init();
     engine.MainLoop();
 
     endwin();

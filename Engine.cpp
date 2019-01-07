@@ -19,6 +19,7 @@ void Engine::Init(int Lev, int Lifes, int KeyCount){
     LaserPion = '|';
     StrzalPoz = 'o';
     StrzalPion = '*';
+    Path = '.';
     Enemy = '$';
     Diament = '@';
     Drzwi = '_';
@@ -40,6 +41,15 @@ void Engine::MainLoop(){
     InitNodes();
 
     while(true){
+        if (Player.Lifes <= 0){ //koniec gry
+            char keyPressed = EndPage();
+            if (keyPressed == 'r'){
+                Init();
+                MainLoop();
+            }
+            break;
+        }
+
         char keyPressed = MovePlayer();
         if (keyPressed == 'q' || keyPressed == 'Q') //zatrzymanie pętli
             break;
@@ -82,18 +92,19 @@ void Engine::MainLoop(){
             break;
         }
 
-        if (Player.Lifes <= 0){ //koniec gry
-            char keyPressed = EndPage();
-            if (keyPressed == 'r'){
-                Init();
-                MainLoop();
-            }
-            break;
-        }
-
         //EnemyMove();
         //EnemyMove2(10);
-        EnemyMove3(10);
+        if (EnemyMove3(10) == 230){
+          Player.Lifes--;
+          //LevScore = Player.Score;
+          board[Player.Y][Player.X] = Empty;
+          UpdateBoard(Player.Y,Player.X);
+          Player.X = PoczPlayer.X;
+          Player.Y = PoczPlayer.Y;
+          eCon.ClearScr();
+          MainLoop();
+          break;
+        }
 
         DrawInfo();
         eCon.Sleep(50);

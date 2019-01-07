@@ -100,7 +100,7 @@ bool Engine::DrawShortestPath(bool visible, sNode *End){
 		sNode *p = End;
 		while (p->parent != nullptr) {
       if (board[p->y][p->x] != Player.Char && board[p->y][p->x] != Enemy){
-			   board[p->y][p->x] = '.';
+			   board[p->y][p->x] = Path;
          if (visible) UpdateBoard(p->y,p->x);
        }
 			p = p->parent;
@@ -109,7 +109,7 @@ bool Engine::DrawShortestPath(bool visible, sNode *End){
   return PathExists;
 }
 
-void Engine::EnemyMove3(int Delay){
+int Engine::EnemyMove3(int Delay){
     vector <int> przesunieci;
     przesunieci.clear();
     bool czyBreak = false;
@@ -133,7 +133,7 @@ void Engine::EnemyMove3(int Delay){
                 //InitNodes();
                 ReloadNodes();
                 SetupNodes();
-                ClearDots(true);
+                //ClearDots(true);
                 nodeStart = &nodes[y * sizeX + x];
 
 
@@ -148,29 +148,33 @@ void Engine::EnemyMove3(int Delay){
                 //wniosek : WTF???
 
                 Solve_AStar(nodeEnd);
-                if (DrawShortestPath(true,nodeEnd)){
-                  if (board[y+1][x] == '.'){
+                if (DrawShortestPath(false,nodeEnd)){
+                  if (board[y+1][x] == Path || board[y+1][x] == Player.Char){
+                    if (board[y+1][x] == Player.Char) return 230;
                     board[y+1][x] = Enemy;
                     board[y][x] = Empty;
                     UpdateBoard(y+1,x);
                     UpdateBoard(y,x);
                     przesunieci.push_back(y+1);
                     przesunieci.push_back(x);
-                  } else if (board[y-1][x] == '.'){
+                  } else if (board[y-1][x] == Path || board[y-1][x] == Player.Char){
+                    if (board[y-1][x] == Player.Char) return 230;
                     board[y-1][x] = Enemy;
                     board[y][x] = Empty;
                     UpdateBoard(y-1,x);
                     UpdateBoard(y,x);
                     przesunieci.push_back(y-1);
                     przesunieci.push_back(x);
-                  } else if (board[y][x+1] == '.'){
+                  } else if (board[y][x+1] == Path || board[y][x+1] == Player.Char){
+                    if (board[y][x+1] == Player.Char) return 230;
                     board[y][x+1] = Enemy;
                     board[y][x] = Empty;
                     UpdateBoard(y,x+1);
                     UpdateBoard(y,x);
                     przesunieci.push_back(y);
                     przesunieci.push_back(x+1);
-                  } else if (board[y][x-1] == '.'){
+                  } else if (board[y][x-1] == Path || board[y][x-1] == Player.Char){
+                    if (board[y][x-1] == Player.Char) return 230;
                     board[y][x-1] = Enemy;
                     board[y][x] = Empty;
                     UpdateBoard(y,x-1);
@@ -187,7 +191,7 @@ void Engine::EnemyMove3(int Delay){
                   board[y][x] = Enemy;
                   UpdateBoard(y,x);
                 }
-                //ClearDots();
+                ClearDots(true);
                 //InitPath();
                 enemyDelay = 0;
             }
@@ -195,6 +199,8 @@ void Engine::EnemyMove3(int Delay){
 
     } else if (enemyDelay < Delay+3)
         enemyDelay++;
+
+    return 1;
 }
 
 
@@ -209,7 +215,7 @@ bool Engine::deadEnd(int y, int x){
 void Engine::ClearDots(bool visible){
   for (int y = 0; y < sizeY; y++)
     for (int x = 0; x < sizeX; x++){
-      if (board[y][x] == '.') {
+      if (board[y][x] == Path) {
         board[y][x] = Empty;
         if (visible) UpdateBoard(y,x);
       }
