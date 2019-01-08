@@ -99,7 +99,7 @@ bool Engine::DrawShortestPath(bool visible, sNode *End){
     PathExists = true;
 		sNode *p = End;
 		while (p->parent != nullptr) {
-      if (board[p->y][p->x] != Player.Char && board[p->y][p->x] != Enemy){
+      if (board[p->y][p->x] != Player.Char && board[p->y][p->x] != Enemy && board[p->y][p->x] != StrzalPoz && board[p->y][p->x] != StrzalPion){
 			   board[p->y][p->x] = Path;
          if (visible) UpdateBoard(p->y,p->x);
        }
@@ -149,7 +149,7 @@ int Engine::EnemyMove3(int Delay){
 
                 Solve_AStar(nodeEnd);
                 if (DrawShortestPath(false,nodeEnd)){
-                  if (board[y+1][x] == Path || board[y+1][x] == Player.Char){
+                  if (board[y+1][x] == Path || board[y+1][x] == Player.Char || (board[y+2][x] == Path && (board[y+1][x] == StrzalPoz || board[y+1][x] == StrzalPion))){
                     if (board[y+1][x] == Player.Char) return 230;
                     board[y+1][x] = Enemy;
                     board[y][x] = Empty;
@@ -157,7 +157,7 @@ int Engine::EnemyMove3(int Delay){
                     UpdateBoard(y,x);
                     przesunieci.push_back(y+1);
                     przesunieci.push_back(x);
-                  } else if (board[y-1][x] == Path || board[y-1][x] == Player.Char){
+                  } else if (board[y-1][x] == Path || board[y-1][x] == Player.Char || (board[y-2][x] == Path && (board[y-1][x] == StrzalPoz || board[y-1][x] == StrzalPion))){
                     if (board[y-1][x] == Player.Char) return 230;
                     board[y-1][x] = Enemy;
                     board[y][x] = Empty;
@@ -165,7 +165,7 @@ int Engine::EnemyMove3(int Delay){
                     UpdateBoard(y,x);
                     przesunieci.push_back(y-1);
                     przesunieci.push_back(x);
-                  } else if (board[y][x+1] == Path || board[y][x+1] == Player.Char){
+                  } else if (board[y][x+1] == Path || board[y][x+1] == Player.Char || (board[y][x+2] == Path && (board[y][x+1] == StrzalPion || board[y][x+1] == StrzalPoz))){
                     if (board[y][x+1] == Player.Char) return 230;
                     board[y][x+1] = Enemy;
                     board[y][x] = Empty;
@@ -173,7 +173,7 @@ int Engine::EnemyMove3(int Delay){
                     UpdateBoard(y,x);
                     przesunieci.push_back(y);
                     przesunieci.push_back(x+1);
-                  } else if (board[y][x-1] == Path || board[y][x-1] == Player.Char){
+                  } else if (board[y][x-1] == Path || board[y][x-1] == Player.Char || (board[y][x-2] == Path && (board[y][x-1] == StrzalPion || board[y][x-1] == StrzalPoz))){
                     if (board[y][x-1] == Player.Char) return 230;
                     board[y][x-1] = Enemy;
                     board[y][x] = Empty;
