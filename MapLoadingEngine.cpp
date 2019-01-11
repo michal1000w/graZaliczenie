@@ -6,10 +6,8 @@ void Engine::ReadMapFromFile(const string filename){
 
     ifstream file;
     file.open(filename);
-    if (file.is_open())
-    {
-        while ( getline (file,line) )
-        {
+    if (file.is_open()) {
+        while ( getline (file,line) ){
             for (int i = 0; i < line.length(); i++){
                 board[y][i] = line[i];
                 if (board[y][i] == Player.Char){
@@ -26,12 +24,28 @@ void Engine::ReadMapFromFile(const string filename){
     }
 }
 
+void Engine::LoadMapsInfo(const string filename){
+  string line;
+  int LevelCount = 0;
+  Levels.clear();
+
+  ifstream file;
+  file.open(filename);
+  if (file.is_open()){
+    LevelCount++;
+    while (getline (file, line)){
+      Levels.push_back(line);
+      LevelCount++;
+    }
+    file.close();
+  }
+  LastLevel = LevelCount;
+}
+
 void Engine::LoadLevel(){
     FillEmpty(); //inicjowanie tablicy zerami
-    if (Level == 1)
-        ReadMapFromFile("mapy/map1.txt");
-    else if (Level == 2)
-        ReadMapFromFile("mapy/map2.txt");
+    if (Level > 0)
+        ReadMapFromFile(Levels[Level-1]);
     else if (Level == -1)
       ReadMapFromFile("mapy/test1.txt");
 }

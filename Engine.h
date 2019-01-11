@@ -64,6 +64,9 @@ private:
     sNode *nodeStart = nullptr;
     sNode *nodeEnd = nullptr;
 
+    //Map Engine
+    vector <string> Levels;
+
 public:
     void Init(int Lev = 1, int Lifes = 3, int KeyCount = 0);
     void MainLoop();
@@ -95,6 +98,7 @@ private:
     bool DrawShortestPath(bool,sNode*);
     void ReloadNodes();
 
+    void LoadMapsInfo(const string filename);
     void ReadMapFromFile(const string filename);
 };
 

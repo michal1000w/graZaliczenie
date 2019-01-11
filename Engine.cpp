@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 void Engine::Init(int Lev, int Lifes, int KeyCount){
+    LoadMapsInfo("mapy/mapy.dat");
     eCon.ClearScr();
     Empty = ' ';
     Level = Lev;

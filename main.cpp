@@ -21,6 +21,8 @@ int main(){
     menu.DrawMenu(sizeX+28, 0);
     Engine engine;
     //engine.Init(-1);
+
+    ///////////Zrobić zapis gry
     engine.Init();
     engine.MainLoop();
 
