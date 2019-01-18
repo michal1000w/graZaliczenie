@@ -1,6 +1,9 @@
 /*
     Gra na projekt semestralny
     autor: Michał Wieczorek
+    Kompilator g++
+    Sprawdzona kompatybilność z systemami Linux Ubuntu i MacOS High Sierra
+    Prawdopodobna kompatybilność z systemem Windows jednak nie testowane
 */
 
 #include "Engine.h"

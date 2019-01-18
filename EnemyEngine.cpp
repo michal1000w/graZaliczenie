@@ -145,7 +145,7 @@ int Engine::EnemyMove3(int Delay){
                 sNode *nodeEnd = nullptr;
                 nodeEnd = &nodes[pos];   //tutaj jest problem
               //nodeEnd = &nodes[7 * sizeX + 2]; //tutaj problemu już nie ma
-                //wniosek : WTF???
+                //wniosek : coś nie działa jak powinno
 
                 Solve_AStar(nodeEnd);
                 if (DrawShortestPath(false,nodeEnd)){
